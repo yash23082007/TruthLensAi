@@ -11,19 +11,32 @@ try:
 except ImportError:
     HAS_PIL = False
 
-try:
-    from transformers import pipeline
-    import torch
+_vision_pipeline = None
+_vision_pipeline_attempted = False
 
-    print("Loading HuggingFace Deepfake Vision model (umm-maybe/AI-image-detector)... This may take a moment.")
-    device = 0 if torch.cuda.is_available() else -1
-    vision_pipeline = pipeline("image-classification", model="umm-maybe/AI-image-detector", device=device)
-except ImportError:
-    vision_pipeline = None
-    print("Transformers or PyTorch not installed. Falling back to heuristics.")
-except Exception as e:
-    vision_pipeline = None
-    print(f"Error loading HuggingFace model: {e}. Falling back to heuristics.")
+def get_vision_pipeline():
+    global _vision_pipeline, _vision_pipeline_attempted
+    if _vision_pipeline_attempted:
+        return _vision_pipeline
+    _vision_pipeline_attempted = True
+    try:
+        from transformers import pipeline
+        import torch
+        device = 0 if torch.cuda.is_available() else -1
+        # Try local cache first to prevent any network blocking
+        try:
+            _vision_pipeline = pipeline("image-classification", model="umm-maybe/AI-image-detector", device=device, local_files_only=True)
+            print("Loaded local cached Deepfake Vision model.")
+        except Exception:
+            _vision_pipeline = None
+            print("Vision model not locally cached. Using advanced forensic heuristics ensemble.")
+    except Exception as e:
+        _vision_pipeline = None
+        print(f"Transformers vision model not loaded ({e}). Using advanced heuristic ensemble.")
+    return _vision_pipeline
+
+# Alias for backwards compatibility
+vision_pipeline = None
 
 try:
     import cv2
@@ -61,9 +74,10 @@ class ImageAnalyzer:
 
         # 1. HuggingFace Neural Network Analysis (primary signal)
         ml_confidence = 0.0
-        if vision_pipeline and pil_img:
+        active_pipeline = get_vision_pipeline()
+        if active_pipeline and pil_img:
             try:
-                results = vision_pipeline(pil_img)
+                results = active_pipeline(pil_img)
                 artificial_score = 0.0
                 for res in results:
                     if res['label'].lower() == 'artificial':

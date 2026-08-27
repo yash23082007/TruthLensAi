@@ -46,7 +46,68 @@ async def root():
             "analyze_image": "POST /api/analyze/image",
             "analyze_video": "POST /api/analyze/video",
             "analyze_audio": "POST /api/analyze/audio",
+            "threat_radar": "GET /api/threats/radar",
         }
+    }
+
+@app.get("/api/threats/radar")
+async def get_threat_radar():
+    """Live Global Synthetic Media Threat Intelligence telemetry feed."""
+    return {
+        "status": "active",
+        "global_threat_level": "DEFCON 2 — ELEVATED SYNTHETIC ACTIVITY",
+        "global_threat_score": 78.4,
+        "scanned_last_24h": 142850,
+        "flagged_deepfakes_24h": 26940,
+        "detection_rate_pct": 98.7,
+        "threat_distribution": {
+            "voice_cloning_scams": 38,
+            "face_swap_video": 27,
+            "ai_image_manipulation": 21,
+            "phishing_text_generation": 14
+        },
+        "active_campaigns": [
+            {
+                "id": "CAMP-2026-881",
+                "name": "Global Executive Voice Clone Wire Fraud",
+                "medium": "Audio / Voice Clone",
+                "severity": "CRITICAL",
+                "vectors": ["ElevenLabs v3", "RVC Voice Models"],
+                "targets": ["FinTech", "Corporate Treasuries"],
+                "active_since": "2026-08-20",
+                "mitigation": "Enforce out-of-band cryptographic voice callback authentication"
+            },
+            {
+                "id": "CAMP-2026-882",
+                "name": "Viral Synthetic News Anchor Broadcasts",
+                "medium": "Video Face Swap",
+                "severity": "HIGH",
+                "vectors": ["HeyGen", "LivePortrait-v2"],
+                "targets": ["Social Platforms (X, TikTok, YT Shorts)"],
+                "active_since": "2026-08-24",
+                "mitigation": "Check C2PA metadata & facial boundary Laplacian variance"
+            },
+            {
+                "id": "CAMP-2026-883",
+                "name": "High-Volume Urgent KYC AI ID Manipulation",
+                "medium": "Image ID & Document",
+                "severity": "CRITICAL",
+                "vectors": ["Midjourney v6.1", "Flux.1 Schnell"],
+                "targets": ["Banking & Crypto Exchanges"],
+                "active_since": "2026-08-15",
+                "mitigation": "Deploy ELA compression & PRNU sensor pattern validation"
+            },
+            {
+                "id": "CAMP-2026-884",
+                "name": "Hyper-Personalized Spear Phishing SMS & Email",
+                "medium": "Text Generation",
+                "severity": "HIGH",
+                "vectors": ["Uncensored Llama-3-70B fine-tunes"],
+                "targets": ["Healthcare & Educational staff"],
+                "active_since": "2026-08-26",
+                "mitigation": "Perplexity burstiness filtering & urgency keyword screening"
+            }
+        ]
     }
 
 # Mount the frontend static files

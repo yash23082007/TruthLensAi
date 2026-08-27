@@ -9,8 +9,8 @@ from models.schemas import AnalysisDetail, FrameAnalysis, RiskLevel
 try:
     import cv2
     from PIL import Image
-    from analyzers.image_analyzer import vision_pipeline
-    HAS_CV2_AND_MODEL = True if vision_pipeline else False
+    from analyzers.image_analyzer import get_vision_pipeline
+    HAS_CV2_AND_MODEL = True
 except ImportError:
     HAS_CV2_AND_MODEL = False
     cv2 = None
@@ -45,7 +45,7 @@ class VideoAnalyzer:
 
         temp_path = None
 
-        if HAS_CV2_AND_MODEL or cv2:
+        if cv2:
             try:
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp_video:
                     temp_video.write(video_bytes)
@@ -66,6 +66,7 @@ class VideoAnalyzer:
                     sampled_frames = []  # Store frames for inter-frame analysis
                     frame_brightnesses = []
                     frame_colors = []
+                    active_pipeline = get_vision_pipeline()
 
                     for i in range(num_samples):
                         frame_num = i * step
@@ -83,10 +84,10 @@ class VideoAnalyzer:
 
                         # Run HF model on frame
                         artificial_score = 0.0
-                        if vision_pipeline:
+                        if active_pipeline:
                             try:
                                 img = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-                                results = vision_pipeline(img)
+                                results = active_pipeline(img)
                                 for res in results:
                                     if res['label'].lower() == 'artificial':
                                         artificial_score = res['score']
