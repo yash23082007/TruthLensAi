@@ -1,0 +1,285 @@
+.live-voice {
+  padding: 40px 0 80px;
+}
+
+.voice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.voice-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.voice-subtitle {
+  color: var(--text-secondary);
+  max-width: 650px;
+  font-size: 1rem;
+}
+
+.voice-workspace {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 900px) {
+  .voice-workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+.voice-console {
+  padding: 24px;
+  background: #030306;
+  display: flex;
+  flex-direction: column;
+}
+
+.console-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+}
+
+.status-pill.recording {
+  border-color: var(--status-danger);
+  color: var(--status-danger);
+}
+
+.status-pill.recording .dot {
+  background: var(--status-danger);
+  animation: pulse 1s infinite;
+}
+
+.status-pill.idle {
+  color: var(--status-success);
+}
+
+.status-pill.idle .dot {
+  background: var(--status-success);
+}
+
+.format-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.spectrogram-canvas-box {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  background: #06060c;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  margin-bottom: 20px;
+}
+
+.voice-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.mic-placeholder-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6, 6, 12, 0.85);
+  gap: 8px;
+}
+
+.mic-icon {
+  font-size: 2.2rem;
+}
+
+.mic-placeholder-overlay p {
+  font-size: 13px;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+
+.console-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mic-btn, .stop-btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 13px;
+}
+
+.stop-btn {
+  background: var(--status-danger);
+  border-color: var(--status-danger);
+  color: #fff;
+}
+
+.playback-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  padding: 12px 16px;
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+
+.audio-player {
+  flex: 1;
+  min-width: 220px;
+  height: 36px;
+}
+
+/* Telemetry Sidebar */
+.voice-telemetry {
+  padding: 24px;
+}
+
+.voice-telemetry h3 {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.gauge-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.telemetry-gauge .gauge-header {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.telemetry-gauge .gauge-header strong {
+  color: var(--accent-cyan);
+  font-size: 12px;
+}
+
+.gauge-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--bg-primary);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.gauge-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #af50ff, #e1bdff);
+  transition: width 0.3s ease;
+}
+
+.telemetry-gauge small {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.3;
+  display: block;
+}
+
+/* Result Box */
+.voice-result-box {
+  padding: 28px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  margin-top: 16px;
+}
+
+.voice-result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.badge-risk {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+.badge-risk.critical { background: rgba(255, 77, 77, 0.2); color: var(--status-danger); }
+.badge-risk.low { background: rgba(36, 180, 126, 0.2); color: var(--status-success); }
+
+.trust-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.trust-pill strong {
+  font-family: var(--font-mono);
+  font-size: 2rem;
+  color: var(--status-danger);
+}
+
+.trust-pill span {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.voice-result-summary {
+  font-size: 14px;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.voice-result-explanation {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  line-height: 1.6;
+}

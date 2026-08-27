@@ -1,133 +1,193 @@
 .pricing-section {
-  padding: 80px 40px;
+  padding: 40px 0 80px;
 }
 
 .pricing-header {
   text-align: center;
-  max-width: 800px;
-  margin: 0 auto 60px auto;
+  max-width: 700px;
+  margin: 0 auto 48px;
 }
 
-.pricing-header h2 {
-  font-size: 32px;
-  margin-bottom: 20px;
+.pricing-main-title {
+  font-size: 2.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
 }
 
-.pricing-grid {
+.pricing-main-desc {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.pricing-grid-triad {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 32px;
-  max-width: 900px;
-  margin: 0 auto;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 48px;
 }
 
-.pricing-card {
+@media (max-width: 990px) {
+  .pricing-grid-triad {
+    grid-template-columns: 1fr;
+  }
+}
+
+.plan-card {
+  padding: 32px;
   display: flex;
   flex-direction: column;
-  padding: 40px;
-  gap: 20px;
+  position: relative;
 }
 
-.pricing-card.popular {
+.plan-card.featured {
   border-color: var(--accent-cyan);
-  box-shadow: 0 0 20px rgba(175, 80, 255, 0.1);
+  box-shadow: 0 0 30px rgba(175, 80, 255, 0.15);
 }
 
-.card-badge {
+.plan-badge-top {
   font-family: var(--font-mono);
   font-size: 10px;
-  background: rgba(175, 80, 255, 0.1);
-  color: var(--accent-cyan);
-  align-self: flex-start;
-  padding: 4px 8px;
-  border-radius: 4px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.plan-badge-top.highlight {
+  color: var(--accent-hover);
+  font-weight: 700;
 }
 
 .plan-name {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.15em;
-  color: var(--text-secondary);
+  font-size: 1.4rem;
+  margin-bottom: 12px;
+  color: #ffffff;
 }
 
-.price-tag {
+.plan-price {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 6px;
+  margin-bottom: 12px;
 }
 
-.price-tag .amount {
-  font-size: 48px;
-  font-weight: 700;
+.price-val {
+  font-size: 2.8rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  color: #ffffff;
+}
+
+.price-term {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.plan-summary {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+/* Credit pack chips */
+.credit-chips-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.credit-chip {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.credit-chip strong {
+  font-family: var(--font-mono);
+  font-size: 11px;
   color: var(--text-primary);
 }
 
-.price-tag .period {
+.credit-chip span {
   font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--text-secondary);
+  font-size: 10px;
+  color: var(--text-muted);
 }
 
-.plan-desc {
-  font-size: 14px;
-  color: var(--text-secondary);
-  line-height: 1.5;
+.credit-chip.active, .credit-chip:hover {
+  background: var(--bg-elevated);
+  border-color: var(--accent-cyan);
 }
 
-.plan-features {
+.credit-chip.active strong {
+  color: var(--accent-cyan);
+}
+
+.plan-perks {
   list-style: none;
+  padding: 0;
+  margin: 0 0 28px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin: 20px 0;
+  gap: 10px;
   flex: 1;
 }
 
-.plan-features li {
-  font-size: 14px;
-  color: var(--text-primary);
-}
-
-.plan-btn {
-  width: 100%;
-}
-
-.billing-trust-card {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 40px;
-  max-width: 900px;
-  margin: 40px auto 0 auto;
-  padding: 30px 40px;
-}
-
-.trust-item {
-  display: flex;
-  gap: 16px;
-}
-
-.trust-icon {
-  font-size: 24px;
-}
-
-.trust-item h4 {
-  font-size: 14px;
-  margin-bottom: 4px;
-}
-
-.trust-item p {
+.plan-perks li {
+  font-size: 13px;
   color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.plan-action-btn {
+  width: 100%;
+  padding: 14px;
   font-size: 12px;
-  line-height: 1.5;
+}
+
+/* Bottom Trust Banner */
+.pricing-trust-banner {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  padding: 28px;
 }
 
 @media (max-width: 768px) {
-  .pricing-grid {
+  .pricing-trust-banner {
     grid-template-columns: 1fr;
   }
-  .billing-trust-card {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
+}
+
+.p-trust-col {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.p-trust-icon {
+  font-size: 1.6rem;
+}
+
+.p-trust-col h4 {
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: #ffffff;
+}
+
+.p-trust-col p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
 }

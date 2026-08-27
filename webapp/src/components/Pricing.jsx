@@ -1,82 +1,134 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Pricing.css';
 
+const CREDIT_PACKAGES = [
+  { credits: 50, price: "$5", savings: "Standard Rate", perScan: "$0.10 / scan", popular: false },
+  { credits: 100, price: "$9", savings: "Save 40%", perScan: "$0.09 / scan", popular: false },
+  { credits: 400, price: "$19", savings: "Save 50% • Most Popular", perScan: "$0.04 / scan", popular: true },
+  { credits: 800, price: "$36", savings: "Save 60% • Pro Best Value", perScan: "$0.03 / scan", popular: false },
+];
+
 const Pricing = ({ onTryFree }) => {
+  const [selectedPack, setSelectedPack] = useState(CREDIT_PACKAGES[2]);
+
   return (
     <div className="pricing-section container animate-fade-in">
       <div className="pricing-header">
-        <div className="section-stamp">Unlimited Verification</div>
-        <h2>PRICING PLANS</h2>
-        <p className="lead-text">
-          TruthLens AI is a free tool designed to make media verification accessible to everyone. 
-          No subscription required, no hidden credit card captures.
+        <div className="section-stamp">Transparent Verification Plans</div>
+        <h1 className="pricing-main-title">SIMPLE, TRANSPARENT PRICING</h1>
+        <p className="pricing-main-desc">
+          Start 100% free with no account required. Upgrade for high-volume enterprise API access, batch analysis, and cryptographic certification.
         </p>
       </div>
 
-      <div className="pricing-grid">
-        {/* Free Plan Card */}
-        <div className="glass-card pricing-card popular">
-          <div className="card-badge">UNLIMITED · ACTIVE</div>
-          <div className="plan-name">FREE TIER</div>
-          <div className="price-tag">
-            <span className="amount">$0</span>
-            <span className="period">/ LIFETIME</span>
+      {/* 3 Tier Main Grid */}
+      <div className="pricing-grid-triad">
+        {/* Tier 1: Free Community */}
+        <div className="glass-card plan-card">
+          <div className="plan-badge-top">COMMUNITY</div>
+          <h3 className="plan-name">FREE TIER</h3>
+          <div className="plan-price">
+            <span className="price-val">$0</span>
+            <span className="price-term">/ FOREVER</span>
           </div>
-          <p className="plan-desc">For journalists, teachers, and concerned citizens seeking truth.</p>
-          <ul className="plan-features">
-            <li>✓ Unlimited Image Forensic Audits</li>
-            <li>✓ Unlimited Video Deepfake Scans</li>
-            <li>✓ Unlimited Cloned Voice Checks</li>
-            <li>✓ Unlimited Text Claim Verifications</li>
-            <li>✓ Full PDF Forensic Report Generation</li>
-            <li>✓ Credits never expire (Unlimited balance)</li>
+          <p className="plan-summary">Perfect for individuals, teachers, and casual fact-checking.</p>
+          <ul className="plan-perks">
+            <li>✓ 100% Free Instant Online Analysis</li>
+            <li>✓ Image, Video, Audio & Text Verification</li>
+            <li>✓ Error Level Analysis (ELA) Heatmaps</li>
+            <li>✓ No Account or Credit Card Required</li>
+            <li>✓ Zero Data Retention (Privacy-by-Design)</li>
           </ul>
-          <button className="btn btn-glow plan-btn" onClick={onTryFree}>
-            START SCANNING
+          <button className="btn btn-secondary plan-action-btn" onClick={onTryFree}>
+            START FREE SCAN
           </button>
         </div>
 
-        {/* Enterprise/Self-host Info Card */}
-        <div className="glass-card pricing-card">
-          <div className="plan-name">SELF-HOST / API</div>
-          <div className="price-tag">
-            <span className="amount">OPEN</span>
-            <span className="period">SOURCE</span>
+        {/* Tier 2: Credit Packs */}
+        <div className="glass-card plan-card featured">
+          <div className="plan-badge-top highlight">POPULAR • NO EXPIRATION</div>
+          <h3 className="plan-name">CREDIT PACKAGES</h3>
+          <div className="plan-price">
+            <span className="price-val">{selectedPack.price}</span>
+            <span className="price-term">ONE-TIME</span>
           </div>
-          <p className="plan-desc">For developers and teams wishing to run TruthLens AI locally.</p>
-          <ul className="plan-features">
-            <li>✓ Fully Local Execution</li>
-            <li>✓ Swagger/OpenAPI Specs</li>
-            <li>✓ HuggingFace & Librosa Pipelines</li>
-            <li>✓ Groq Llama 3.3 Integration</li>
-            <li>✓ MIT License</li>
-            <li>✓ Zero Third-Party Data Tracking</li>
+          <p className="plan-summary">Lifetime validity. Ideal for researchers and frequent fact-checkers.</p>
+          
+          {/* Credit Pack Selector Buttons */}
+          <div className="credit-chips-selector">
+            {CREDIT_PACKAGES.map((pkg, i) => (
+              <button
+                key={i}
+                className={`credit-chip ${selectedPack.credits === pkg.credits ? 'active' : ''}`}
+                onClick={() => setSelectedPack(pkg)}
+              >
+                <strong>{pkg.credits} CREDITS</strong>
+                <span>{pkg.price} USD</span>
+              </button>
+            ))}
+          </div>
+
+          <ul className="plan-perks">
+            <li>✓ {selectedPack.credits} Deep Forensic Analysis Credits</li>
+            <li>✓ High-Resolution Multi-Frame Video Auditing</li>
+            <li>✓ Downloadable Cryptographic PDF Certificates</li>
+            <li>✓ Credits Never Expire • Lifetime Balance</li>
+            <li>✓ Priority Neural Pipeline Queue</li>
           </ul>
-          <a 
-            className="btn btn-secondary plan-btn" 
-            href="https://github.com/yash23082007/TruthLensAi" 
-            target="_blank" 
+          <button className="btn btn-glow plan-action-btn" onClick={() => alert(`Proceeding to secure checkout for ${selectedPack.credits} credits (${selectedPack.price}).`)}>
+            BUY {selectedPack.credits} CREDITS ({selectedPack.price})
+          </button>
+        </div>
+
+        {/* Tier 3: Enterprise & Developer API */}
+        <div className="glass-card plan-card">
+          <div className="plan-badge-top">ENTERPRISE & API</div>
+          <h3 className="plan-name">BUSINESS PRO</h3>
+          <div className="plan-price">
+            <span className="price-val">$99</span>
+            <span className="price-term">/ MONTH</span>
+          </div>
+          <p className="plan-summary">For newsrooms, finTech platforms, and security operations centers.</p>
+          <ul className="plan-perks">
+            <li>✓ Unlimited REST API Verification Calls</li>
+            <li>✓ Sub-100ms Ultra-Low Latency SLA</li>
+            <li>✓ C2PA Cryptographic Signature Verification</li>
+            <li>✓ Webhook Automation & Real-Time Alerts</li>
+            <li>✓ Dedicated Enterprise Account Manager</li>
+            <li>✓ On-Premise / Self-Host Deployment Options</li>
+          </ul>
+          <a
+            className="btn btn-secondary plan-action-btn"
+            href="https://github.com/yash23082007/TruthLensAi"
+            target="_blank"
             rel="noopener noreferrer"
           >
-            VIEW CODEBASE
+            CONTACT ENTERPRISE
           </a>
         </div>
       </div>
 
-      {/* Trust banner */}
-      <div className="glass-card billing-trust-card">
-        <div className="trust-item">
-          <span className="trust-icon">🔒</span>
+      {/* Trust & Guarantee Grid */}
+      <div className="pricing-trust-banner glass-card">
+        <div className="p-trust-col">
+          <span className="p-trust-icon">🔒</span>
           <div>
             <h4>Privacy-First Default</h4>
-            <p>Your uploaded media is processed in memory and deleted immediately after analysis.</p>
+            <p>Your uploaded media is processed in volatile memory and deleted immediately post-scan.</p>
           </div>
         </div>
-        <div className="trust-item">
-          <span className="trust-icon">🌐</span>
+        <div className="p-trust-col">
+          <span className="p-trust-icon">⚡</span>
           <div>
-            <h4>100% Free Coverage</h4>
-            <p>No paywalls or premium tiers. Enjoy full API and UI feature access free.</p>
+            <h4>Instant Activation</h4>
+            <p>Credits and API access are provisioned automatically within seconds of purchase.</p>
+          </div>
+        </div>
+        <div className="p-trust-col">
+          <span className="p-trust-icon">🛡️</span>
+          <div>
+            <h4>Stripe Encrypted Billing</h4>
+            <p>Bank-grade 256-bit SSL encryption. We never store your raw payment details.</p>
           </div>
         </div>
       </div>

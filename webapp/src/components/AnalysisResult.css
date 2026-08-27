@@ -9,12 +9,20 @@
   margin-bottom: 40px;
   border-bottom: 1px solid var(--border-light);
   padding-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .results-header h2 {
   font-size: 24px;
   font-weight: 500;
   letter-spacing: -0.02em;
+}
+
+.results-actions-top {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .results-grid {

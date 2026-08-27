@@ -1,0 +1,338 @@
+.threat-radar {
+  padding: 40px 0 80px;
+}
+
+.radar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.radar-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.radar-subtitle {
+  color: var(--text-secondary);
+  max-width: 650px;
+  font-size: 1rem;
+}
+
+.radar-hero-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 900px) {
+  .radar-hero-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.defcon-card {
+  padding: 28px;
+  background: linear-gradient(135deg, #140d1f 0%, #1a1a1a 100%);
+  border-color: rgba(175, 80, 255, 0.3);
+}
+
+.defcon-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--accent-cyan);
+  margin-bottom: 12px;
+}
+
+.defcon-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.defcon-status h2 {
+  font-size: 1.5rem;
+  color: #ffffff;
+}
+
+.radar-blip {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--status-danger);
+  box-shadow: 0 0 16px var(--status-danger);
+  animation: pulse 1s infinite;
+}
+
+.threat-meter {
+  width: 100%;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.threat-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #f59e0b, #ff4d4d);
+}
+
+.defcon-footer {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.defcon-footer strong {
+  color: var(--text-primary);
+}
+
+.stats-ticker-card {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.stat-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.stat-number {
+  font-family: var(--font-mono);
+  font-size: 1.8rem;
+  color: var(--text-primary);
+}
+
+.stat-number.danger { color: var(--status-danger); }
+.stat-number.success { color: var(--status-success); }
+
+.stat-badge.live {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  background: rgba(36, 180, 126, 0.2);
+  color: var(--status-success);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* Distribution Pane */
+.distribution-pane {
+  padding: 24px 28px;
+  margin-bottom: 28px;
+}
+
+.distribution-pane h3 {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+
+.vector-bars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.vector-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.vector-head strong {
+  font-family: var(--font-mono);
+  color: var(--accent-cyan);
+}
+
+.vector-track {
+  width: 100%;
+  height: 6px;
+  background: var(--bg-primary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.vector-fill {
+  height: 100%;
+  background: var(--accent-cyan);
+}
+
+/* Campaigns Section */
+.campaigns-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.campaigns-header h3 {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+}
+
+.filter-pills {
+  display: flex;
+  gap: 8px;
+}
+
+.filter-btn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.filter-btn.active, .filter-btn:hover {
+  background: var(--bg-elevated);
+  border-color: var(--accent-cyan);
+  color: #ffffff;
+}
+
+.campaign-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.campaign-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.campaign-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.severity-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.severity-tag.critical {
+  background: rgba(255, 77, 77, 0.2);
+  color: var(--status-danger);
+  border: 1px solid var(--status-danger);
+}
+
+.severity-tag.high {
+  background: rgba(245, 158, 11, 0.2);
+  color: var(--status-warning);
+  border: 1px solid var(--status-warning);
+}
+
+.camp-id {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.camp-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.camp-meta {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.meta-lbl {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.meta-val {
+  font-size: 12px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.vector-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.v-chip {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: var(--accent-hover);
+}
+
+.camp-mitigation {
+  background: var(--bg-primary);
+  border-left: 3px solid var(--status-success);
+  padding: 10px 12px;
+  border-radius: 0 6px 6px 0;
+  font-size: 12px;
+}
+
+.camp-mitigation strong {
+  display: block;
+  color: var(--status-success);
+  margin-bottom: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.camp-mitigation p {
+  color: var(--text-secondary);
+  line-height: 1.4;
+}

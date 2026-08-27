@@ -1,20 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import TrustScoreGauge from './TrustScoreGauge';
 import RiskBadge from './RiskBadge';
+import VerificationCertificate from './VerificationCertificate';
 import './AnalysisResult.css';
 
-const AnalysisResult = ({ result, onReset }) => {
+const AnalysisResult = ({ result, onReset, onOpenForensicLab }) => {
+  const [showCertificate, setShowCertificate] = useState(false);
+
   if (!result) return null;
 
   return (
     <div id="results-view" className="results-section container animate-fade-in">
       <div className="results-header">
-        <h2>ANALYSIS RESULT</h2>
-        <button className="btn btn-secondary" onClick={onReset}>NEW SCAN</button>
+        <div>
+          <div className="section-stamp">Forensic Audit Verdict</div>
+          <h2>ANALYSIS RESULT</h2>
+        </div>
+        <div className="results-actions-top">
+          <button className="btn btn-glow" onClick={() => setShowCertificate(true)}>
+            📜 EXPORT CERTIFICATE
+          </button>
+          {onOpenForensicLab && (
+            <button className="btn btn-secondary" onClick={onOpenForensicLab}>
+              🔬 INSPECT IN FORENSIC LAB
+            </button>
+          )}
+          <button className="btn btn-secondary" onClick={onReset}>
+            NEW SCAN
+          </button>
+        </div>
       </div>
 
       <div className="results-grid">
-        {/* Left Column: Summary */}
+        {/* Left Column: Summary & Gauge */}
         <div className="glass-card result-summary">
           <div className="score-container">
             <TrustScoreGauge score={result.trust_score} />
@@ -29,10 +47,10 @@ const AnalysisResult = ({ result, onReset }) => {
           </div>
         </div>
 
-        {/* Right Column: Detailed Explanation */}
+        {/* Right Column: Detailed Explanation & Forensic Evidence */}
         <div className="glass-card result-details">
           <div className="details-header">
-            <h3>DETAILED FINDINGS</h3>
+            <h3>FORENSIC SIGNALS & REASONING</h3>
             <span className="content-badge">{result.content_type.toUpperCase()} ANALYSIS</span>
           </div>
           
@@ -60,7 +78,7 @@ const AnalysisResult = ({ result, onReset }) => {
                   <span className="finding-icon">✅</span>
                   <div className="finding-content">
                     <strong>CLEAR</strong>
-                    <span className="finding-detail">No anomalies or manipulation signatures identified.</span>
+                    <span className="finding-detail">No anomalies or manipulation signatures identified across all tested signals.</span>
                   </div>
                 </div>
               )}
@@ -68,10 +86,18 @@ const AnalysisResult = ({ result, onReset }) => {
           </div>
           
           <div className="metadata-footer">
-            <span>PROCESSED IN {result.processing_time_ms}MS VIA FASTDETECT API</span>
+            <span>PROCESSED IN {result.processing_time_ms}MS • TRUTHLENS FORENSIC ENGINE</span>
           </div>
         </div>
       </div>
+
+      {/* Cryptographic Certificate Modal */}
+      {showCertificate && (
+        <VerificationCertificate
+          result={result}
+          onClose={() => setShowCertificate(false)}
+        />
+      )}
     </div>
   );
 };
