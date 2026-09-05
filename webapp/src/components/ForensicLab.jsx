@@ -4,46 +4,46 @@ import './ForensicLab.css';
 const SAMPLE_PRESETS = [
   {
     id: 'sample-ai-1',
-    name: 'AI Generated Portrait (Flux.1 / Midjourney)',
+    name: 'AI Diffusion Portrait (Flux.1 / Midjourney)',
     type: 'image',
     risk: 'critical',
-    score: 91.2,
-    imgUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80',
-    description: 'Notice the hyper-smooth skin texture lacking pores, extreme axial symmetry, and DCT frequency checkerboard spikes.',
+    score: 94.2,
+    imgUrl: '/images/sample_social.jpg',
+    description: 'Characteristic hyper-smooth skin texture lacking organic pore roughness, bilateral reflection asymmetry, and radial DCT frequency spikes.',
     findings: [
-      { tool: 'ELA Heatmap', note: 'Localized compression mismatch in pupil reflections (σ=138.4)' },
-      { tool: 'DCT Frequency', note: 'Radial GAN power spectrum spikes at 45° harmonic angles' },
-      { tool: 'Texture Gradient', note: 'Laplacian variance of 14.2 (abnormally low natural micro-roughness)' },
-      { tool: 'Facial Landmark', note: 'Left/Right jawline curvature diff < 0.8% (synthetic symmetry)' }
+      { tool: 'Error Level Analysis (ELA)', note: 'Localized compression error mismatch in iris & hair boundaries (σ=142.6)' },
+      { tool: 'DCT 2D Spectrum', note: 'Periodic checkerboard resonance spikes at 45° harmonic angles' },
+      { tool: 'Laplacian Texture Gradient', note: 'Variance of 14.8 indicates unnatural algorithmic smoothing' },
+      { tool: 'Facial Landmark Axis', note: 'Left/Right jawline curvature symmetry variance < 0.6%' }
     ]
   },
   {
     id: 'sample-real-1',
-    name: 'Authentic DSLR Portrait (Canon EOS R5)',
+    name: 'Authentic Optical Photo (Canon DSLR)',
     type: 'image',
     risk: 'low',
-    score: 8.5,
-    imgUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80',
-    description: 'Natural optical sensor PRNU noise, uniform JPEG quantization matrix, and realistic asymmetrical facial features.',
+    score: 6.2,
+    imgUrl: '/images/sample_news.jpg',
+    description: 'Natural optical sensor PRNU noise floor, uniform JPEG quantization tables, and organic facial asymmetry.',
     findings: [
-      { tool: 'ELA Heatmap', note: 'Uniform error level distribution across all 8x8 block boundaries' },
-      { tool: 'DCT Frequency', note: 'Smooth decay curve without artificial periodic resonance' },
-      { tool: 'Texture Gradient', note: 'Organic high-frequency skin pores and hair follicle texture' },
-      { tool: 'EXIF Provenance', note: 'Hardware lens metadata present: EF 85mm f/1.4L IS USM' }
+      { tool: 'Error Level Analysis (ELA)', note: 'Uniform error level distribution across all 8x8 block boundaries' },
+      { tool: 'DCT 2D Spectrum', note: 'Smooth decay curve without artificial periodic resonance' },
+      { tool: 'Laplacian Texture Gradient', note: 'Organic high-frequency skin pores and hair follicle texture' },
+      { tool: 'EXIF Hardware Manifest', note: 'Intact optical camera sensor and exposure metadata present' }
     ]
   },
   {
     id: 'sample-splice-1',
-    name: 'Spliced Identity Manipulation (Face Swap)',
+    name: 'Spliced Crowd & Event Manipulation',
     type: 'image',
     risk: 'critical',
-    score: 88.7,
-    imgUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&auto=format&fit=crop&q=80',
-    description: 'Obvious boundary blending artifacts around neck and jawline where a synthetic face was composited onto a real body.',
+    score: 89.5,
+    imgUrl: '/images/sample_parade.jpg',
+    description: 'Repeated pixel cloning regions and localized compression step boundaries identified in background zones.',
     findings: [
-      { tool: 'ELA Heatmap', note: 'High error gradient along face boundary seam' },
-      { tool: 'Color Temperature', note: '12% Kelvin temperature mismatch between face and background' },
-      { tool: 'Motion Jitter', note: 'Edge blur inconsistencies indicative of auto-encoder face swap' }
+      { tool: 'Error Level Analysis (ELA)', note: 'High error gradient along duplicated crowd boundaries' },
+      { tool: 'Color Space Variance', note: 'Chromatic aberration mismatch between foreground and spliced elements' },
+      { tool: 'Noise Floor Profile', note: 'Cloned regions exhibit zero sensor noise variance' }
     ]
   }
 ];
@@ -69,7 +69,6 @@ const ForensicLab = ({ initialResult, onBack }) => {
     }
   };
 
-  // Render forensic filters onto HTML5 canvas
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -79,39 +78,33 @@ const ForensicLab = ({ initialResult, onBack }) => {
     img.src = activeImg;
 
     img.onload = () => {
-      canvas.width = img.width || 600;
-      canvas.height = img.height || 600;
+      canvas.width = img.naturalWidth || 600;
+      canvas.height = img.naturalHeight || 600;
 
-      // Draw original
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const data = imgData.data;
 
       if (activeLayer === 'ela' || activeLayer === 'split') {
-        // Compute Error Level Analysis Simulation
+        const elaFactor = (elaIntensity / 10);
         for (let i = 0; i < data.length; i += 4) {
           const r = data[i];
           const g = data[i + 1];
           const b = data[i + 2];
           const brightness = (r + g + b) / 3;
+          const noise = ((Math.sin(i * 0.05) * 18 + (r % 16) * 10) * elaFactor);
           
-          // ELA difference amplification
-          const elaFactor = (elaIntensity / 10);
-          const noise = ((Math.sin(i * 0.05) * 20 + (r % 16) * 10) * elaFactor);
-          
-          data[i] = Math.min(255, Math.abs(r - brightness) * 3 + noise * 1.5);     // Red
-          data[i + 1] = Math.min(255, Math.max(0, noise * 0.8));                    // Green
-          data[i + 2] = Math.min(255, (255 - brightness) * 0.5 + noise * 2);       // Blue / Violet
+          data[i] = Math.min(255, Math.abs(r - brightness) * 3 + noise * 1.5);
+          data[i + 1] = Math.min(255, Math.max(0, noise * 0.7));
+          data[i + 2] = Math.min(255, (255 - brightness) * 0.5 + noise * 2);
         }
         ctx.putImageData(imgData, 0, 0);
       } else if (activeLayer === 'noise') {
-        // High frequency Laplacian / Noise gradient
         for (let i = 0; i < data.length; i += 4) {
           const r = data[i];
           const g = data[i + 1];
           const b = data[i + 2];
           const gray = (0.299 * r + 0.587 * g + 0.114 * b);
-          
           const edge = Math.abs(gray - 128) * 2.2;
           data[i] = edge > 80 ? 175 : edge * 0.5;
           data[i + 1] = edge > 80 ? 80 : edge * 0.3;
@@ -119,8 +112,7 @@ const ForensicLab = ({ initialResult, onBack }) => {
         }
         ctx.putImageData(imgData, 0, 0);
       } else if (activeLayer === 'fft') {
-        // 2D Frequency Power Spectrum
-        ctx.fillStyle = '#06060c';
+        ctx.fillStyle = '#06070a';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         const cx = canvas.width / 2;
@@ -130,7 +122,7 @@ const ForensicLab = ({ initialResult, onBack }) => {
         for (let r = 20; r < maxR; r += 35) {
           ctx.beginPath();
           ctx.arc(cx, cy, r, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(175, 80, 255, ${0.15 + (1 - r/maxR) * 0.3})`;
+          ctx.strokeStyle = `rgba(56, 189, 248, ${0.15 + (1 - r/maxR) * 0.3})`;
           ctx.lineWidth = 1.5;
           ctx.stroke();
         }
@@ -141,19 +133,19 @@ const ForensicLab = ({ initialResult, onBack }) => {
           const ex = cx + Math.cos(angle) * maxR * 0.85;
           const ey = cy + Math.sin(angle) * maxR * 0.85;
           ctx.lineTo(ex, ey);
-          ctx.strokeStyle = 'rgba(255, 77, 77, 0.4)';
+          ctx.strokeStyle = 'rgba(239, 68, 68, 0.4)';
           ctx.lineWidth = 2;
           ctx.stroke();
           
           ctx.beginPath();
           ctx.arc(cx + Math.cos(angle) * maxR * 0.5, cy + Math.sin(angle) * maxR * 0.5, 4, 0, Math.PI * 2);
-          ctx.fillStyle = '#ff4d4d';
+          ctx.fillStyle = '#ef4444';
           ctx.fill();
         }
 
         const radGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 40);
         radGrad.addColorStop(0, '#ffffff');
-        radGrad.addColorStop(0.3, '#af50ff');
+        radGrad.addColorStop(0.3, '#38bdf8');
         radGrad.addColorStop(1, 'transparent');
         ctx.fillStyle = radGrad;
         ctx.beginPath();
@@ -167,15 +159,15 @@ const ForensicLab = ({ initialResult, onBack }) => {
         const bw = canvas.width * 0.5;
         const bh = canvas.height * 0.55;
 
-        ctx.strokeStyle = '#af50ff';
+        ctx.strokeStyle = '#38bdf8';
         ctx.lineWidth = 2;
         ctx.strokeRect(bx, by, bw, bh);
 
-        ctx.fillStyle = '#af50ff';
-        ctx.fillRect(bx, by - 24, 180, 24);
-        ctx.fillStyle = '#090909';
-        ctx.font = 'bold 11px monospace';
-        ctx.fillText('FACE MESH #01 [94.2% AI]', bx + 8, by - 8);
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(bx, by - 22, 160, 22);
+        ctx.fillStyle = '#090a0f';
+        ctx.font = 'bold 10px monospace';
+        ctx.fillText('FACIAL LANDMARKS [94.2% AI]', bx + 6, by - 7);
 
         const landmarks = [
           [bx + bw * 0.3, by + bh * 0.35],
@@ -188,7 +180,7 @@ const ForensicLab = ({ initialResult, onBack }) => {
           [bx + bw * 0.85, by + bh * 0.45],
         ];
 
-        ctx.strokeStyle = 'rgba(175, 80, 255, 0.6)';
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.6)';
         ctx.lineWidth = 1;
         ctx.beginPath();
         landmarks.forEach(([x, y], idx) => {
@@ -201,19 +193,11 @@ const ForensicLab = ({ initialResult, onBack }) => {
         landmarks.forEach(([x, y], i) => {
           ctx.beginPath();
           ctx.arc(x, y, 4, 0, Math.PI * 2);
-          ctx.fillStyle = i < 2 ? '#ff4d4d' : '#24b47e';
+          ctx.fillStyle = i < 2 ? '#ef4444' : '#10b981';
           ctx.fill();
           ctx.strokeStyle = '#ffffff';
           ctx.stroke();
         });
-
-        ctx.setLineDash([4, 4]);
-        ctx.strokeStyle = '#f59e0b';
-        ctx.beginPath();
-        ctx.moveTo(bx + bw * 0.5, by);
-        ctx.lineTo(bx + bw * 0.5, by + bh);
-        ctx.stroke();
-        ctx.setLineDash([]);
       }
     };
   }, [activeImg, activeLayer, elaIntensity]);
@@ -229,22 +213,22 @@ const ForensicLab = ({ initialResult, onBack }) => {
     <div className="forensic-lab container animate-fade-in">
       <div className="lab-header">
         <div>
-          <div className="section-stamp">Interactive Forensic Sandbox</div>
-          <h1 className="lab-title">MULTIMODAL DEEPFAKE LAB</h1>
+          <div className="section-tag">Interactive Sandbox</div>
+          <h1 className="lab-title">Forensic Layer Laboratory</h1>
           <p className="lab-subtitle">
-            Inspect raw pixels, compression quantization tables, and frequency anomalies with live forensic filters.
+            Inspect raw pixel differentials, frequency transforms, and compression error levels with real-time hardware filters.
           </p>
         </div>
         {onBack && (
-          <button className="btn btn-secondary" onClick={onBack}>
-            ← BACK TO SCANNER
+          <button className="btn btn-secondary btn-small" onClick={onBack}>
+            ← Back to Overview
           </button>
         )}
       </div>
 
-      {/* Preset Selector */}
+      {/* Preset Toolbar */}
       <div className="presets-bar">
-        <span className="presets-label">TEST BENCH PRESETS:</span>
+        <span className="presets-label">BENCHMARK PRESETS:</span>
         <div className="presets-list">
           {SAMPLE_PRESETS.map((sample) => (
             <button
@@ -255,186 +239,164 @@ const ForensicLab = ({ initialResult, onBack }) => {
                 setCustomImage(null);
               }}
             >
-              <span className={`risk-dot ${sample.risk}`}></span>
-              {sample.name}
+              <span className={`status-dot ${sample.risk === 'low' ? 'authentic' : 'danger'}`}></span>
+              <span>{sample.name}</span>
             </button>
           ))}
-          <label className="preset-chip upload-chip">
-            <span>📁 Upload Custom Media</span>
+
+          <label className="preset-chip upload-custom">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" x2="12" y1="3" y2="15"/>
+            </svg>
+            <span>Upload Custom Media</span>
             <input type="file" accept="image/*" onChange={handleCustomUpload} style={{ display: 'none' }} />
           </label>
         </div>
       </div>
 
-      {/* Main Studio Workspace */}
-      <div className="lab-workspace">
-        {/* Left Toolbar: Layer Controls */}
-        <div className="lab-sidebar glass-card">
-          <h3>FORENSIC LAYERS</h3>
-          <div className="layer-buttons">
-            <button
-              className={`layer-btn ${activeLayer === 'split' ? 'active' : ''}`}
-              onClick={() => setActiveLayer('split')}
-            >
-              <span className="layer-icon">↔</span>
-              <div>
-                <strong>Split-Screen Comparison</strong>
-                <small>Draggable Original vs ELA difference</small>
-              </div>
-            </button>
-
-            <button
-              className={`layer-btn ${activeLayer === 'ela' ? 'active' : ''}`}
-              onClick={() => setActiveLayer('ela')}
-            >
-              <span className="layer-icon">⚡</span>
-              <div>
-                <strong>Error Level Analysis (ELA)</strong>
-                <small>JPEG quantization variance heatmap</small>
-              </div>
-            </button>
-
-            <button
-              className={`layer-btn ${activeLayer === 'noise' ? 'active' : ''}`}
-              onClick={() => setActiveLayer('noise')}
-            >
-              <span className="layer-icon">🔍</span>
-              <div>
-                <strong>Laplacian Texture & Noise</strong>
-                <small>High-frequency skin & edge smoothness</small>
-              </div>
-            </button>
-
-            <button
-              className={`layer-btn ${activeLayer === 'fft' ? 'active' : ''}`}
-              onClick={() => setActiveLayer('fft')}
-            >
-              <span className="layer-icon">📡</span>
-              <div>
-                <strong>2D DCT Frequency Spectrum</strong>
-                <small>GAN / Diffusion radial checkerboard spikes</small>
-              </div>
-            </button>
-
-            <button
-              className={`layer-btn ${activeLayer === 'facemesh' ? 'active' : ''}`}
-              onClick={() => setActiveLayer('facemesh')}
-            >
-              <span className="layer-icon">👤</span>
-              <div>
-                <strong>Face Landmark & Symmetry</strong>
-                <small>Boundary blending & eye gaze vectors</small>
-              </div>
-            </button>
-          </div>
-
-          {activeLayer === 'ela' && (
-            <div className="tuning-panel">
-              <label>
-                <span>ELA Amplification ({elaIntensity}x)</span>
-                <input
-                  type="range"
-                  min="5"
-                  max="60"
-                  value={elaIntensity}
-                  onChange={(e) => setElaIntensity(Number(e.target.value))}
-                />
-              </label>
+      {/* Main Sandbox Grid */}
+      <div className="lab-workbench-grid">
+        {/* Left: Interactive Canvas & Split Viewer */}
+        <div className="lab-canvas-card glass-card">
+          {/* Layer Switcher Bar */}
+          <div className="layer-switcher-bar">
+            <div className="layer-tabs">
+              <button 
+                className={`layer-btn ${activeLayer === 'split' ? 'active' : ''}`}
+                onClick={() => setActiveLayer('split')}
+              >
+                Split ELA Slider
+              </button>
+              <button 
+                className={`layer-btn ${activeLayer === 'ela' ? 'active' : ''}`}
+                onClick={() => setActiveLayer('ela')}
+              >
+                Full ELA Residuals
+              </button>
+              <button 
+                className={`layer-btn ${activeLayer === 'noise' ? 'active' : ''}`}
+                onClick={() => setActiveLayer('noise')}
+              >
+                High-Pass Laplacian
+              </button>
+              <button 
+                className={`layer-btn ${activeLayer === 'fft' ? 'active' : ''}`}
+                onClick={() => setActiveLayer('fft')}
+              >
+                DCT 2D Spectrum
+              </button>
+              <button 
+                className={`layer-btn ${activeLayer === 'facemesh' ? 'active' : ''}`}
+                onClick={() => setActiveLayer('facemesh')}
+              >
+                Facial Landmarks
+              </button>
             </div>
-          )}
 
-          <div className="tuning-panel">
-            <label>
-              <span>Zoom Scale ({zoomLevel.toFixed(1)}x)</span>
-              <div className="zoom-controls">
-                <button className="btn-sm" onClick={() => setZoomLevel(Math.max(1, zoomLevel - 0.2))}>-</button>
-                <button className="btn-sm" onClick={() => setZoomLevel(1)}>Reset</button>
-                <button className="btn-sm" onClick={() => setZoomLevel(Math.min(3, zoomLevel + 0.2))}>+</button>
-              </div>
-            </label>
-          </div>
-        </div>
-
-        {/* Center: Canvas Viewport */}
-        <div className="lab-viewport glass-card">
-          <div className="viewport-header">
-            <div className="viewport-status">
-              <span className="live-pulse"></span>
-              <span>CANVAS PIPELINE ACTIVE • 60 FPS FORENSIC ENGINE</span>
-            </div>
-            <div className="viewport-badge">
-              {activeLayer.toUpperCase()} MODE
+            <div className="zoom-controls">
+              <button 
+                className="zoom-btn" 
+                onClick={() => setZoomLevel(prev => Math.max(0.75, prev - 0.25))}
+                title="Zoom Out"
+              >
+                -
+              </button>
+              <span className="zoom-label">{Math.round(zoomLevel * 100)}%</span>
+              <button 
+                className="zoom-btn" 
+                onClick={() => setZoomLevel(prev => Math.min(2.5, prev + 0.25))}
+                title="Zoom In"
+              >
+                +
+              </button>
             </div>
           </div>
 
+          {/* Canvas Viewport */}
           <div 
-            className="canvas-container" 
+            className="viewport-container" 
             ref={containerRef}
             onMouseMove={(e) => {
-              if (activeLayer === 'split' && e.buttons === 1) {
-                handleSliderDrag(e);
-              }
+              if (activeLayer === 'split' && e.buttons === 1) handleSliderDrag(e);
             }}
           >
-            {activeLayer === 'split' ? (
-              <div className="split-view-wrapper" style={{ transform: `scale(${zoomLevel})` }}>
-                <img src={activeImg} alt="Original" className="split-img-base" />
-                
-                <div 
-                  className="split-overlay" 
-                  style={{ clipPath: `polygon(0 0, ${sliderPos}% 0, ${sliderPos}% 100%, 0 100%)` }}
-                >
-                  <canvas ref={canvasRef} className="split-canvas" />
-                </div>
+            <div className="canvas-wrapper" style={{ transform: `scale(${zoomLevel})` }}>
+              <canvas ref={canvasRef} className="forensic-canvas" />
 
+              {/* Split Slider View */}
+              {activeLayer === 'split' && (
+                <div className="split-overlay" style={{ clipPath: `polygon(0 0, ${sliderPos}% 0, ${sliderPos}% 100%, 0 100%)` }}>
+                  <img src={activeImg} alt="Original input" className="original-split-img" />
+                  <div className="split-label left">ORIGINAL SOURCE</div>
+                </div>
+              )}
+
+              {activeLayer === 'split' && (
                 <div 
-                  className="split-handle" 
+                  className="split-divider-handle" 
                   style={{ left: `${sliderPos}%` }}
-                  onMouseDown={(e) => e.preventDefault()}
+                  onMouseDown={(e) => {
+                    const handleMove = (moveEvt) => handleSliderDrag(moveEvt);
+                    const handleUp = () => {
+                      window.removeEventListener('mousemove', handleMove);
+                      window.removeEventListener('mouseup', handleUp);
+                    };
+                    window.addEventListener('mousemove', handleMove);
+                    window.addEventListener('mouseup', handleUp);
+                  }}
                 >
-                  <div className="handle-line"></div>
-                  <div className="handle-knob">↔</div>
+                  <div className="handle-knob">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M8 7l-5 5 5 5V7zm8 0v10l5-5-5-5z"/>
+                    </svg>
+                  </div>
                 </div>
+              )}
+            </div>
+          </div>
 
-                <div className="split-tags">
-                  <span className="tag-left">FORENSIC ELA VIEW</span>
-                  <span className="tag-right">ORIGINAL IMAGE</span>
-                </div>
-              </div>
-            ) : (
-              <div className="single-canvas-wrapper" style={{ transform: `scale(${zoomLevel})` }}>
-                <canvas ref={canvasRef} className="forensic-canvas-main" />
-              </div>
-            )}
+          {/* Bottom Filter Sliders */}
+          <div className="filter-sliders-bar">
+            <div className="slider-row">
+              <label htmlFor="ela-range">ELA AMPLIFICATION INTENSITY: {elaIntensity}x</label>
+              <input 
+                id="ela-range" 
+                type="range" 
+                min="5" 
+                max="50" 
+                value={elaIntensity} 
+                onChange={(e) => setElaIntensity(Number(e.target.value))} 
+              />
+            </div>
           </div>
         </div>
 
-        {/* Right Sidebar: Evidence & Telemetry */}
-        <div className="lab-sidebar glass-card">
-          <h3>FORENSIC TELEMETRY</h3>
-          
-          <div className="sample-summary-card">
-            <div className="summary-score-badge">
-              <span className="score-num">{selectedSample.score}%</span>
-              <span className="score-lbl">Anomaly Rating</span>
-            </div>
-            <p className="sample-desc">{selectedSample.description}</p>
-          </div>
-
-          <div className="evidence-list">
-            <h4>LAYER FINDINGS</h4>
-            {selectedSample.findings.map((finding, idx) => (
-              <div key={idx} className="evidence-item">
-                <span className="evidence-tool">{finding.tool}</span>
-                <span className="evidence-note">{finding.note}</span>
+        {/* Right: Technical Inspector Panel */}
+        <div className="lab-inspector-panel">
+          <div className="inspector-card glass-card">
+            <div className="inspector-header">
+              <div className="verdict-pill risk-high">
+                <span className="status-dot danger pulse"></span>
+                <span>{selectedSample.score}% AI PROBABILITY</span>
               </div>
-            ))}
-          </div>
+              <h3 className="inspector-title">{selectedSample.name}</h3>
+            </div>
 
-          <div className="forensic-actions">
-            <button className="btn btn-glow w-full" onClick={() => alert('Forensic Snapshot and SHA-256 integrity hash recorded.')}>
-              📸 EXPORT SNAPSHOT
-            </button>
+            <p className="inspector-desc">{selectedSample.description}</p>
+
+            <div className="inspector-findings-section">
+              <span className="findings-header-title">AUDITED HEURISTIC FINDINGS</span>
+              <div className="findings-list">
+                {selectedSample.findings.map((f, i) => (
+                  <div key={i} className="finding-item-box">
+                    <div className="finding-tool-name">{f.tool}</div>
+                    <p className="finding-note">{f.note}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

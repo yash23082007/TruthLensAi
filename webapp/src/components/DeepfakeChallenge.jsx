@@ -4,71 +4,54 @@ import './DeepfakeChallenge.css';
 const CHALLENGE_ROUNDS = [
   {
     id: 1,
-    title: 'Photorealistic Portrait',
+    title: 'Photorealistic Portrait Benchmark',
     type: 'image',
     mediaA: {
-      url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&auto=format&fit=crop&q=80',
+      url: '/images/sample_news.jpg',
       label: 'Photo A',
       isFake: false
     },
     mediaB: {
-      url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80',
+      url: '/images/sample_social.jpg',
       label: 'Photo B',
       isFake: true
     },
-    forensicHint: 'Examine the pupil reflections, earlobe cartilage definition, and background depth-of-field coherence.',
-    explanation: 'Photo B is AI-generated (Flux.1 model). Notice the lack of natural skin pores on the cheekbones and unnatural specular highlights in the iris.'
+    forensicHint: 'Examine pupil reflection consistency, hair follicle definition, and skin pore micro-roughness.',
+    explanation: 'Photo B is AI-generated (Flux.1 model). Notice the lack of natural skin pores on cheekbones and bilateral specular highlight symmetry in the iris.'
   },
   {
     id: 2,
     title: 'Historical Archive Photograph',
     type: 'image',
     mediaA: {
-      url: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&auto=format&fit=crop&q=80',
+      url: '/images/sample_parade.jpg',
       label: 'Photo A',
       isFake: true
     },
     mediaB: {
-      url: 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=600&auto=format&fit=crop&q=80',
+      url: '/images/sample_finance.jpg',
       label: 'Photo B',
       isFake: false
     },
-    forensicHint: 'Look for film grain consistency, edge fringing, and period-accurate textile weave patterns.',
-    explanation: 'Photo A is a synthetic deepfake retro recreation. The digital noise pattern does not match silver halide film grain under Laplacian frequency analysis.'
+    forensicHint: 'Look for repeated background pixel clusters and compression block boundary anomalies under ELA.',
+    explanation: 'Photo A contains cloned background sections. Under Laplacian frequency analysis, pixel clusters repeat with identical byte noise.'
   },
   {
     id: 3,
-    title: 'Breaking Viral News Event',
+    title: 'Video Call & Interview Recording',
     type: 'image',
     mediaA: {
-      url: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&auto=format&fit=crop&q=80',
+      url: '/images/sample_news.jpg',
       label: 'Photo A',
       isFake: false
     },
     mediaB: {
-      url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop&q=80',
+      url: '/images/sample_videocall.jpg',
       label: 'Photo B',
       isFake: true
     },
-    forensicHint: 'Audit perspective vanishing lines and architectural geometry repeating patterns.',
-    explanation: 'Photo B has GAN spatial warping on the upper structural facades where the generative model hallucinated window alignments.'
-  },
-  {
-    id: 4,
-    title: 'Financial Document & Invoice Audit',
-    type: 'image',
-    mediaA: {
-      url: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?w=600&auto=format&fit=crop&q=80',
-      label: 'Photo A',
-      isFake: true
-    },
-    mediaB: {
-      url: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600&auto=format&fit=crop&q=80',
-      label: 'Photo B',
-      isFake: false
-    },
-    forensicHint: 'Inspect font baseline alignment and micro-print anti-counterfeit rastering.',
-    explanation: 'Photo A is a synthesized forgery created by a diffusion document inpainting model. Font baselines jump by 3.2px between digit pairs.'
+    forensicHint: 'Audit jawline boundary blending and real-time face filter auto-encoder blur.',
+    explanation: 'Photo B exhibits real-time face swap blur along the neck seam where the synthetic face is mapped onto the source subject.'
   }
 ];
 
@@ -106,8 +89,8 @@ const DeepfakeChallenge = ({ onBack }) => {
     setCurrentIdx(0);
     setSelectedGuess(null);
     setIsAnswered(false);
-    setShowHint(false);
     setScore(0);
+    setShowHint(false);
     setIsCompleted(false);
   };
 
@@ -115,138 +98,123 @@ const DeepfakeChallenge = ({ onBack }) => {
     <div className="deepfake-challenge container animate-fade-in">
       <div className="challenge-header">
         <div>
-          <div className="section-stamp">Interactive Perception Arena</div>
-          <h1 className="challenge-title">SPOT THE DEEPFAKE CHALLENGE</h1>
+          <div className="section-tag">Interactive Arena</div>
+          <h1 className="challenge-title">Spot The Deepfake Challenge</h1>
           <p className="challenge-subtitle">
-            Test your human perception against state-of-the-art synthetic media. One of these images is authentic, and one is an AI generation. Can you find the fake?
+            Can human visual perception distinguish authentic photography from AI generative synthesis? Test your forensic instincts against certified benchmark sets.
           </p>
         </div>
         {onBack && (
-          <button className="btn btn-secondary" onClick={onBack}>
-            ← BACK TO SCANNER
+          <button className="btn btn-secondary btn-small" onClick={onBack}>
+            ← Back to Overview
           </button>
         )}
       </div>
 
       {!isCompleted ? (
         <div className="arena-card glass-card">
-          {/* Round Header & Progress */}
-          <div className="arena-top">
+          {/* Top Info Bar */}
+          <div className="arena-top-bar">
             <div className="round-indicator">
-              ROUND {currentIdx + 1} OF {CHALLENGE_ROUNDS.length}: <strong>{round.title.toUpperCase()}</strong>
+              <span className="round-badge">ROUND {currentIdx + 1} OF {CHALLENGE_ROUNDS.length}</span>
+              <h3 className="round-title">{round.title}</h3>
             </div>
             <div className="score-pill">
-              YOUR SCORE: <strong>{score} / {currentIdx + (isAnswered ? 1 : 0)}</strong>
+              <span className="score-lbl">SCORE:</span>
+              <strong>{score} / {CHALLENGE_ROUNDS.length}</strong>
             </div>
           </div>
 
-          {/* Side by Side Comparison Grid */}
-          <div className="media-comparison-grid">
-            {/* Option A */}
-            <div className={`media-option-card ${isAnswered ? (round.mediaA.isFake ? 'is-fake' : 'is-real') : ''}`}>
-              <div className="media-preview-box">
+          {/* Side by Side Photos */}
+          <div className="comparison-arena-grid">
+            {/* Photo A */}
+            <div className={`media-choice-card ${isAnswered ? (round.mediaA.isFake ? 'is-fake' : 'is-real') : ''}`}>
+              <div className="media-img-wrapper">
                 <img src={round.mediaA.url} alt="Option A" className="challenge-img" />
-                <span className="media-label">{round.mediaA.label}</span>
+                <span className="option-tag">PHOTO A</span>
                 {isAnswered && (
-                  <span className={`reveal-stamp ${round.mediaA.isFake ? 'fake' : 'real'}`}>
-                    {round.mediaA.isFake ? '🔴 AI DEEPFAKE' : '🟢 AUTHENTIC REAL'}
-                  </span>
+                  <div className="verdict-banner">
+                    {round.mediaA.isFake ? '🔴 AI GENERATED' : '🟢 AUTHENTIC'}
+                  </div>
                 )}
               </div>
-              <button
-                className={`btn ${selectedGuess === 'A' ? 'btn-glow' : 'btn-secondary'} vote-btn`}
+              <button 
+                className={`btn w-full ${selectedGuess === 'A' ? 'btn-primary' : 'btn-secondary'}`}
                 onClick={() => handleVote('A')}
                 disabled={isAnswered}
               >
-                {isAnswered && selectedGuess === 'A' ? 'YOUR PICK' : 'PICK PHOTO A AS FAKE'}
+                {selectedGuess === 'A' ? 'Your Selection' : 'Vote Photo A is Synthetic'}
               </button>
             </div>
 
-            {/* Option B */}
-            <div className={`media-option-card ${isAnswered ? (round.mediaB.isFake ? 'is-fake' : 'is-real') : ''}`}>
-              <div className="media-preview-box">
+            {/* Photo B */}
+            <div className={`media-choice-card ${isAnswered ? (round.mediaB.isFake ? 'is-fake' : 'is-real') : ''}`}>
+              <div className="media-img-wrapper">
                 <img src={round.mediaB.url} alt="Option B" className="challenge-img" />
-                <span className="media-label">{round.mediaB.label}</span>
+                <span className="option-tag">PHOTO B</span>
                 {isAnswered && (
-                  <span className={`reveal-stamp ${round.mediaB.isFake ? 'fake' : 'real'}`}>
-                    {round.mediaB.isFake ? '🔴 AI DEEPFAKE' : '🟢 AUTHENTIC REAL'}
-                  </span>
+                  <div className="verdict-banner">
+                    {round.mediaB.isFake ? '🔴 AI GENERATED' : '🟢 AUTHENTIC'}
+                  </div>
                 )}
               </div>
-              <button
-                className={`btn ${selectedGuess === 'B' ? 'btn-glow' : 'btn-secondary'} vote-btn`}
+              <button 
+                className={`btn w-full ${selectedGuess === 'B' ? 'btn-primary' : 'btn-secondary'}`}
                 onClick={() => handleVote('B')}
                 disabled={isAnswered}
               >
-                {isAnswered && selectedGuess === 'B' ? 'YOUR PICK' : 'PICK PHOTO B AS FAKE'}
+                {selectedGuess === 'B' ? 'Your Selection' : 'Vote Photo B is Synthetic'}
               </button>
             </div>
           </div>
 
-          {/* Hint & Forensic Explanation */}
-          <div className="arena-controls-bottom">
+          {/* Hint & Explanations */}
+          <div className="arena-footer">
             {!isAnswered ? (
-              <div className="hint-box">
-                {!showHint ? (
-                  <button className="hint-toggle-btn" onClick={() => setShowHint(true)}>
-                    💡 Need a forensic clue? Click to reveal hint
-                  </button>
-                ) : (
-                  <p className="hint-text"><strong>FORENSIC CLUE:</strong> {round.forensicHint}</p>
+              <div className="hint-container">
+                <button className="btn btn-secondary btn-small" onClick={() => setShowHint(!showHint)}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                    <line x1="12" x2="12.01" y1="17" y2="17"/>
+                  </svg>
+                  {showHint ? 'Hide Forensic Hint' : 'Show Forensic Hint'}
+                </button>
+                {showHint && (
+                  <p className="hint-text animate-fade-in">{round.forensicHint}</p>
                 )}
               </div>
             ) : (
-              <div className="verdict-banner animate-slide-up">
-                <div className="verdict-title">
-                  {((selectedGuess === 'A' && round.mediaA.isFake) || (selectedGuess === 'B' && round.mediaB.isFake)) ? (
-                    <span className="text-success">🎉 EXCELLENT EYE! YOU CAUGHT THE FAKE.</span>
-                  ) : (
-                    <span className="text-danger">⚠️ DECEIVED! THE AI FOOLED YOU.</span>
-                  )}
+              <div className="explanation-box animate-fade-in">
+                <div className="explanation-header">
+                  <strong>FORENSIC BREAKDOWN:</strong>
+                  <span className={`result-eval ${((selectedGuess === 'A' && round.mediaA.isFake) || (selectedGuess === 'B' && round.mediaB.isFake)) ? 'text-success' : 'text-danger'}`}>
+                    {((selectedGuess === 'A' && round.mediaA.isFake) || (selectedGuess === 'B' && round.mediaB.isFake)) ? '✓ Correct Identification!' : '✗ Incorrect!'}
+                  </span>
                 </div>
-                <p className="verdict-explanation">{round.explanation}</p>
-                <div className="verdict-actions">
-                  <button className="btn btn-primary" onClick={handleNext}>
-                    {currentIdx < CHALLENGE_ROUNDS.length - 1 ? 'NEXT ROUND →' : 'VIEW FINAL REPORT →'}
-                  </button>
-                </div>
+                <p className="explanation-text">{round.explanation}</p>
+                <button className="btn btn-primary btn-small next-round-btn" onClick={handleNext}>
+                  {currentIdx < CHALLENGE_ROUNDS.length - 1 ? 'Next Round →' : 'View Final Score'}
+                </button>
               </div>
             )}
           </div>
         </div>
       ) : (
-        /* Completed Scorecard */
-        <div className="scorecard-card glass-card animate-slide-up">
-          <div className="scorecard-icon">🏆</div>
-          <h2>CHALLENGE COMPLETE!</h2>
-          <div className="scorecard-rating">
-            <span className="big-score">{Math.round((score / CHALLENGE_ROUNDS.length) * 100)}%</span>
-            <span className="score-desc">Human Perception Accuracy</span>
+        <div className="completed-card glass-card animate-fade-in">
+          <div className="score-circle-display">
+            <span className="final-score-num">{score}/{CHALLENGE_ROUNDS.length}</span>
+            <span className="final-score-lbl">Correct Identifications</span>
           </div>
-
-          <div className="comparison-table">
-            <div className="table-col human">
-              <span>YOUR RESULT</span>
-              <strong>{score} / {CHALLENGE_ROUNDS.length} CORRECT</strong>
-            </div>
-            <div className="table-col ai">
-              <span>TRUTHLENS AI</span>
-              <strong>4 / 4 (100% ACCURACY)</strong>
-            </div>
-          </div>
-
-          <p className="scorecard-summary">
-            Modern generative models like Flux and Midjourney are designed to pass human visual inspection. That's why multi-signal forensic verification (ELA, EXIF, and frequency analysis) is essential to know what's real.
+          <h2>Challenge Completed</h2>
+          <p className="completion-sub">
+            {score === CHALLENGE_ROUNDS.length 
+              ? 'Expert Forensic Eye! You identified every synthetic media vector correctly.' 
+              : 'Generative models fool human perception up to 60% of the time. Automated neural tools like TruthLens inspect frequency spectrums beyond human sight.'}
           </p>
-
-          <div className="scorecard-actions">
-            <button className="btn btn-secondary" onClick={handleRestart}>
-              🔄 RETRY CHALLENGE
-            </button>
-            <button className="btn btn-glow" onClick={onBack}>
-              ⚡ TRY TRUTHLENS SCANNER
-            </button>
-          </div>
+          <button className="btn btn-primary" onClick={handleRestart}>
+            Try Challenge Again
+          </button>
         </div>
       )}
     </div>

@@ -3,21 +3,24 @@ import './Legal.css';
 
 const Privacy = () => {
   return (
-    <div className="legal-section animate-fade-in">
-      <h2>PRIVACY POLICY</h2>
-      <p>Last updated: October 2023</p>
-      
-      <h3>1. Information We Collect</h3>
-      <p>We collect information that you provide directly to us when you use the TruthLens AI platform. This may include uploaded media files, text inputs, and usage logs required for verification analysis.</p>
+    <div className="legal-section container animate-fade-in">
+      <div className="legal-card glass-card">
+        <div className="section-tag">Governance & Privacy</div>
+        <h2>Privacy Policy & Zero Data Retention</h2>
+        <span className="legal-date">Last updated: August 2026</span>
+        
+        <h3>1. Zero Data Retention Principle</h3>
+        <p>TruthLens operates under a strict privacy-first architecture. Media files uploaded for analysis (images, audio clips, videos, and text claims) are processed entirely in-memory within volatile runtime instances and are immediately destroyed upon generation of the forensic verdict. We do not store, catalog, or resell uploaded payloads.</p>
 
-      <h3>2. How We Use Your Information</h3>
-      <p>We use the information we collect primarily to provide, maintain, and improve our multimodal content verification services. Uploaded content is processed temporarily for analysis and is not stored permanently unless explicitly opted-in by the user for model training.</p>
+        <h3>2. Telemetry and Analytics</h3>
+        <p>We collect aggregated, anonymized telemetry metrics (such as model execution latency, processing throughput, and threat category distribution) to monitor infrastructure health and active generative threat campaigns.</p>
 
-      <h3>3. Data Security</h3>
-      <p>We implement appropriate technical and organizational measures to protect the security of your personal information. However, please note that no method of transmission over the Internet is 100% secure.</p>
+        <h3>3. Cryptographic Proof Records</h3>
+        <p>Verification certificates generate SHA-256 integrity hashes computed directly on client payloads. These cryptographic signatures prove content state at the time of verification without requiring persistent payload archiving on our servers.</p>
 
-      <h3>4. Contact Us</h3>
-      <p>If you have any questions about this Privacy Policy, please contact us at <a href="mailto:ktanayash@gmail.com" style={{color: 'var(--accent-cyan)'}}>ktanayash@gmail.com</a>.</p>
+        <h3>4. Contact & Inquiries</h3>
+        <p>For data privacy queries or enterprise security audits, contact us at <a href="mailto:ktanayash@gmail.com" style={{color: 'var(--accent-cyan)'}}>ktanayash@gmail.com</a>.</p>
+      </div>
     </div>
   );
 };

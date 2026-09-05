@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from models.schemas import HealthResponse
 from core.config import settings
-from datetime import datetime
+from datetime import datetime, timezone
 
 router = APIRouter(prefix="/api", tags=["Health"])
 
@@ -13,7 +13,7 @@ async def health_check():
         status="healthy",
         app_name=settings.APP_NAME,
         version=settings.APP_VERSION,
-        timestamp=datetime.utcnow().isoformat(),
+        timestamp=datetime.now(timezone.utc).isoformat(),
         analyzers={
             "text_analyzer": "active",
             "image_analyzer": "active",

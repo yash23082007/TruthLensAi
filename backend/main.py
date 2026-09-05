@@ -1,5 +1,13 @@
-from fastapi import FastAPI
+import os
+import sys
+
+BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
+if BACKEND_DIR not in sys.path:
+    sys.path.insert(0, BACKEND_DIR)
+
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from core.config import settings
 from routers import health, text, image, video, audio
 
@@ -12,14 +20,28 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# CORS middleware
+# CORS middleware - permissive for all local dev ports & client setups
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail, "status_code": exc.status_code},
+    )
+
+@app.exception_handler(Exception)
+async def generic_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal analysis error. Please try again.", "status_code": 500},
+    )
 
 # Register routers
 app.include_router(health.router)

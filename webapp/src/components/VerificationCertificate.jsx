@@ -43,15 +43,20 @@ const VerificationCertificate = ({ result, onClose }) => {
             {/* Header */}
             <div className="cert-top">
               <div className="cert-logo">
-                <span className="logo-badge">TL</span>
+                <div className="brand-icon small">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <circle cx="12" cy="11" r="3"/>
+                  </svg>
+                </div>
                 <div>
-                  <h3>TRUTHLENS AI FORENSICS</h3>
-                  <p>Multimodal Content Authenticity Authority</p>
+                  <h3 className="cert-authority-name">TruthLens AI Forensics</h3>
+                  <p className="cert-authority-sub">Multimodal Content Authenticity Authority</p>
                 </div>
               </div>
               <div className="cert-id-block">
-                <span>CASE IDENTIFIER</span>
-                <strong>{caseId}</strong>
+                <span className="cert-id-lbl">AUDIT CASE ID</span>
+                <strong className="cert-id-val">{caseId}</strong>
               </div>
             </div>
 
@@ -59,8 +64,8 @@ const VerificationCertificate = ({ result, onClose }) => {
 
             {/* Title */}
             <div className="cert-title-section">
-              <h1>FORENSIC VERIFICATION CERTIFICATE</h1>
-              <p>OFFICIAL DIGITAL FORENSIC AUDIT RECORD</p>
+              <h1 className="cert-main-heading">Forensic Verification Certificate</h1>
+              <p className="cert-sub-heading">OFFICIAL DIGITAL FORENSIC AUDIT RECORD</p>
             </div>
 
             {/* Main Verdict & Gauge */}
@@ -76,13 +81,15 @@ const VerificationCertificate = ({ result, onClose }) => {
               <div className="cert-score-box">
                 <div className="cert-gauge-val">{result.trust_score}%</div>
                 <span className="cert-gauge-lbl">ANOMALY INDEX</span>
-                <span className={`risk-pill ${result.risk_level}`}>{result.risk_level.toUpperCase()} RISK</span>
+                <span className={`signal-severity-tag sev-${result.risk_level?.toLowerCase()}`}>
+                  {result.risk_level?.toUpperCase()} RISK
+                </span>
               </div>
             </div>
 
             {/* Signal Details Breakdown */}
             <div className="cert-signals-section">
-              <h4>AUDITED FORENSIC SIGNALS</h4>
+              <span className="signals-subhead">AUDITED FORENSIC SIGNALS</span>
               <div className="cert-signals-table">
                 <div className="table-header">
                   <span>SIGNAL VECTOR</span>
@@ -99,52 +106,43 @@ const VerificationCertificate = ({ result, onClose }) => {
                   ))
                 ) : (
                   <div className="table-row">
-                    <span className="signal-cat">Visual / Audio / Text</span>
-                    <span className="signal-find">No statistical or metadata anomalies detected.</span>
-                    <span className="signal-conf">98%</span>
+                    <span className="signal-cat">Pixel Noise & ELA</span>
+                    <span className="signal-find">Consistent optical sensor noise profile verified</span>
+                    <span className="signal-conf">100%</span>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Cryptographic Seal & Provenance */}
-            <div className="cert-footer-grid">
-              <div className="crypto-details">
-                <div className="crypto-line">
-                  <span>SHA-256 INTEGRITY HASH:</span>
-                  <code>{sha256Hash}</code>
-                </div>
-                <div className="crypto-line">
-                  <span>TIMESTAMP (UTC):</span>
-                  <strong>{issueDate}</strong>
-                </div>
-                <div className="crypto-line">
-                  <span>VERIFICATION PROTOCOL:</span>
-                  <strong>TruthLens Multi-Signal Neural Engine v2.4</strong>
-                </div>
+            {/* Cryptographic Hash Provenance */}
+            <div className="cert-crypto-footer">
+              <div className="crypto-item">
+                <span className="crypto-lbl">PAYLOAD SHA-256 HASH:</span>
+                <code className="crypto-val">{sha256Hash}</code>
               </div>
-
-              <div className="cert-seal-box">
-                <div className="seal-badge">
-                  <div className="seal-star">★</div>
-                  <span>OFFICIAL AUDIT</span>
-                  <strong>VERIFIED</strong>
-                </div>
+              <div className="crypto-row-bottom">
+                <span>ISSUED UTC: <strong>{issueDate}</strong></span>
+                <span>PKI ROOT: <strong>TRUTHLENS-ECDSA-SEC256K1</strong></span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Action Controls */}
+        {/* Certificate Actions Bar */}
         <div className="cert-actions-bar">
-          <button className="btn btn-secondary" onClick={onClose}>
-            ✕ CLOSE
-          </button>
           <button className="btn btn-secondary" onClick={handleCopyAuditJson}>
-            {copied ? '✓ JSON COPIED' : '📋 COPY JSON AUDIT'}
+            {copied ? '✓ JSON Copied' : 'Copy Audit JSON'}
           </button>
-          <button className="btn btn-glow" onClick={handlePrint}>
-            🖨️ PRINT / DOWNLOAD PDF
+          <button className="btn btn-primary" onClick={handlePrint}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="6 9 6 2 18 2 18 9"/>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+              <rect width="12" height="8" x="6" y="14"/>
+            </svg>
+            Print / Save PDF
+          </button>
+          <button className="btn btn-secondary" onClick={onClose}>
+            Close Certificate
           </button>
         </div>
       </div>

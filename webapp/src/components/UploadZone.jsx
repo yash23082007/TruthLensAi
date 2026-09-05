@@ -2,45 +2,74 @@ import React, { useState, useCallback, useEffect } from 'react';
 import './UploadZone.css';
 import { analyzeContent } from '../utils/api';
 
+const SAMPLES = {
+  image: [
+    { label: 'Synthetic AI Portrait', file: 'sample_social.jpg', tag: 'AI' },
+    { label: 'Authentic News Photo', file: 'sample_news.jpg', tag: 'REAL' },
+    { label: 'Spliced Crowd Photo', file: 'sample_parade.jpg', tag: 'SPLICED' }
+  ],
+  audio: [
+    { label: 'Synthetic Voice Scam', text: 'URGENT: This is federal treasury agent calling regarding your immediate wire tax transfer.', tag: 'VOICE' },
+    { label: 'Authentic Voice Note', text: 'Hey, I left my keys at the front desk. Let me know when you arrive at the office.', tag: 'HUMAN' }
+  ],
+  text: [
+    { label: 'Bank Phishing Email', text: 'URGENT SECURITY ALERT: Your online banking account has been temporarily restricted due to unauthorized login attempts. Confirm your social security number and password within 24 hours to prevent account closure.', tag: 'PHISHING' },
+    { label: 'Scientific Claim', text: 'Recent clinical research published in medical journals confirms that daily cardiovascular exercise reduces long-term mortality risk.', tag: 'CLAIM' },
+    { label: 'Synthetic Formula Essay', text: 'In conclusion, it is important to recognize that technological paradigms serve as a transformative catalyst for multifaceted modern ecosystems, leveraging holistic synergy.', tag: 'LLM' }
+  ],
+  video: [
+    { label: 'Video Face-Swap Frame', file: 'sample_videocall.jpg', tag: 'FACE-SWAP' },
+    { label: 'Authentic Camera Capture', file: 'sample_news.jpg', tag: 'AUTHENTIC' }
+  ]
+};
+
+const SCAN_STAGES = [
+  "Uploading file...",
+  "Running image analysis...",
+  "Checking for manipulation...",
+  "Analyzing metadata...",
+  "Generating report..."
+];
+
 const UploadZone = ({ onAnalysisComplete, preselectedType, setPreselectedType, routeType = 'home' }) => {
+  const [activeTab, setActiveTab] = useState(preselectedType || (routeType !== 'home' ? routeType : 'image'));
   const [isDragging, setIsDragging] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [scanStageIdx, setScanStageIdx] = useState(0);
   const [textInput, setTextInput] = useState('');
-  const [activeTab, setActiveTab] = useState('file');
   const [error, setError] = useState('');
+  const [selectedFileName, setSelectedFileName] = useState('');
 
-  // Auto-switch tabs based on routeType or preselectedType
-  useEffect(() => {
-    if (routeType === 'text') {
-      setActiveTab('text');
-    } else if (routeType !== 'home') {
-      setActiveTab('file');
-    }
-  }, [routeType]);
-
-  // Handle preselected tool redirection from Navbar/Footer
   useEffect(() => {
     if (preselectedType) {
-      if (preselectedType === 'text') {
-        setActiveTab('text');
-      } else {
-        setActiveTab('file');
-      }
-      setTimeout(() => {
-        document.getElementById('upload-zone')?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-      setPreselectedType(null);
+      setActiveTab(preselectedType);
     }
-  }, [preselectedType, setPreselectedType]);
+  }, [preselectedType]);
 
-  const processFile = async (file) => {
+  useEffect(() => {
+    let interval;
+    if (isAnalyzing) {
+      interval = setInterval(() => {
+        setScanStageIdx((prev) => (prev < SCAN_STAGES.length - 1 ? prev + 1 : prev));
+      }, 450);
+    } else {
+      setScanStageIdx(0);
+    }
+    return () => clearInterval(interval);
+  }, [isAnalyzing]);
+
+  const processFile = async (file, typeOverride) => {
     if (!file) return;
     
-    let type = 'image';
-    if (file.type.startsWith('video/')) type = 'video';
-    else if (file.type.startsWith('audio/')) type = 'audio';
-    else if (file.type.startsWith('text/')) type = 'text';
+    let type = typeOverride || activeTab;
+    if (!typeOverride) {
+      if (file.type.startsWith('video/')) type = 'video';
+      else if (file.type.startsWith('audio/')) type = 'audio';
+      else if (file.type.startsWith('text/')) type = 'text';
+      else if (file.type.startsWith('image/')) type = 'image';
+    }
 
+    setSelectedFileName(file.name);
     setIsAnalyzing(true);
     setError('');
 
@@ -48,8 +77,7 @@ const UploadZone = ({ onAnalysisComplete, preselectedType, setPreselectedType, r
       const result = await analyzeContent(file, type);
       onAnalysisComplete(result);
     } catch (err) {
-      setError('Analysis failed. Ensure backend is running.');
-      console.error(err);
+      setError(err.message || 'Verification service temporarily unavailable. Please verify backend connection.');
     } finally {
       setIsAnalyzing(false);
     }
@@ -68,265 +96,267 @@ const UploadZone = ({ onAnalysisComplete, preselectedType, setPreselectedType, r
   const handleDrop = useCallback((e) => {
     e.preventDefault();
     setIsDragging(false);
-    
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      processFile(e.dataTransfer.files[0]);
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      processFile(files[0]);
     }
-  }, []);
+  }, [activeTab]);
 
   const handleFileInput = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      processFile(e.target.files[0]);
-      e.target.value = '';
+    const files = e.target.files;
+    if (files.length > 0) {
+      processFile(files[0]);
     }
   };
 
   const handleTextAnalyze = async () => {
     if (!textInput.trim()) return;
-    
     setIsAnalyzing(true);
     setError('');
-
     try {
       const result = await analyzeContent(textInput, 'text');
       onAnalysisComplete(result);
     } catch (err) {
-      setError('Analysis failed. Ensure backend is running.');
-      console.error(err);
+      setError(err.message || 'Could not analyze text claims.');
     } finally {
       setIsAnalyzing(false);
     }
   };
 
-  // Mock demo results for interactive verification without actual file uploads
-  const handleTriggerExample = (type, sampleIdx) => {
-    setIsAnalyzing(true);
-    setError('');
-
-    setTimeout(() => {
-      setIsAnalyzing(false);
-      let mockResult = {};
-
-      if (type === 'image') {
-        if (sampleIdx === 1) {
-          mockResult = {
-            id: "mock-img-1",
-            content_type: "image",
-            timestamp: new Date().toISOString(),
-            trust_score: 87.5,
-            risk_level: "critical",
-            is_authentic: false,
-            summary: "⚠️ CRITICAL: Mismatched ELA compression and face anomalies detected.",
-            explanation: "Visual Forensics Report:\n🔴 [AI Generation] Face detected with extreme symmetry (diff=1.2) and smooth texture.\n🔴 [Manipulation] Error Level Analysis (ELA) shows localized compression inconsistency (σ=142.1).\n⚡ [AI Generation] DCT frequency analysis shows GANcheckerboard spikes.",
-            details: [
-              { category: "AI Generation", finding: "Face shows unnaturally high symmetry (diff=1.2)", confidence: 0.92, severity: "critical" },
-              { category: "Manipulation", finding: "ELA grid variance exceeds safety threshold (σ=142.1)", confidence: 0.88, severity: "high" },
-              { category: "AI Generation", finding: "Frequency spectrum autolink checkerboard peaks detected", confidence: 0.76, severity: "medium" }
-            ],
-            processing_time_ms: 120
-          };
-        } else {
-          mockResult = {
-            id: "mock-img-2",
-            content_type: "image",
-            timestamp: new Date().toISOString(),
-            trust_score: 12.0,
-            risk_level: "low",
-            is_authentic: true,
-            summary: "🟢 LOW RISK: Image details appear natural and authentic.",
-            explanation: "Visual Forensics Report:\n✅ [Manipulation] Camera EXIF metadata present: Apple iPhone 15 Pro.\n✅ [Manipulation] ELA compression variance is uniform (σ=12.4).\n✅ [Deepfake Detection] Skin texture Laplacian variance is realistic.",
-            details: [
-              { category: "Manipulation", finding: "Camera EXIF metadata present (Apple iPhone 15 Pro)", confidence: 0.95, severity: "low" },
-              { category: "Manipulation", finding: "Uniform compression across all segments (σ=12.4)", confidence: 0.85, severity: "low" }
-            ],
-            processing_time_ms: 95
-          };
-        }
-      } else if (type === 'video') {
-        mockResult = {
-          id: "mock-vid-1",
-          content_type: "video",
-          timestamp: new Date().toISOString(),
-          trust_score: 92.4,
-          risk_level: "critical",
-          is_authentic: false,
-          summary: "⚠️ CRITICAL: High-ratio frame deepfake and facial jitter detected.",
-          explanation: "Video Forensics Report:\n🔴 [Deepfake Detection] 11 of 15 sampled frames flagged as AI-generated.\n🔴 [Deepfake Detection] Erratic face tracking positional jitter detected across adjacent frames.\n⚡ [Manipulation] Re-encoded container metadata blocks detected (moov atom duplicate).",
-          details: [
-            { category: "Deepfake Detection", finding: "11 of 15 frames classified as AI-generated by CNN model", confidence: 0.94, severity: "critical" },
-            { category: "Deepfake Detection", finding: "Face position jitter variance exceeds threshold (CV=2.45)", confidence: 0.85, severity: "high" },
-            { category: "Manipulation", finding: "Duplicate moov atoms detected in container", confidence: 0.60, severity: "medium" }
-          ],
-          total_frames: 450,
-          deepfake_frames: 330,
-          processing_time_ms: 250
-        };
-      } else if (type === 'audio') {
-        mockResult = {
-          id: "mock-aud-1",
-          content_type: "audio",
-          timestamp: new Date().toISOString(),
-          trust_score: 94.0,
-          risk_level: "critical",
-          is_authentic: false,
-          summary: "⚠️ CRITICAL: Voice cloning and flat pitch transitions detected.",
-          explanation: "Audio Forensics Report:\n🔴 [AI Generation] Autocorrelation of pitch shows flat F0 variance (CV=0.015).\n🔴 [AI Generation] MFCC spectral shape reveals low variability (σ=4.12).\n⚡ [AI Generation] Pause distribution intervals are mathematically uniform (CV=0.12).",
-          details: [
-            { category: "AI Generation", finding: "Flat pitch envelope CV is below human threshold (CV=0.015)", confidence: 0.95, severity: "critical" },
-            { category: "AI Generation", finding: "MFCC envelope shows unnaturally low spectral variance (σ=4.12)", confidence: 0.92, severity: "high" },
-            { category: "AI Generation", finding: "TTS silence intervals are mathematically uniform", confidence: 0.78, severity: "medium" }
-          ],
-          processing_time_ms: 180
-        };
+  const loadSample = async (sample, type) => {
+    if (sample.text) {
+      setTextInput(sample.text);
+      setIsAnalyzing(true);
+      setError('');
+      try {
+        const result = await analyzeContent(sample.text, type || 'text');
+        onAnalysisComplete(result);
+      } catch (err) {
+        setError('Sample analysis failed.');
+      } finally {
+        setIsAnalyzing(false);
       }
-
-      onAnalysisComplete(mockResult);
-    }, 1500);
-  };
-
-  // Determine accepted file formats and copy based on routeType
-  const getUploadSpecs = () => {
-    switch (routeType) {
-      case 'image':
-        return {
-          accept: "image/*",
-          title: "Drag & drop an image or click",
-          desc: "PNG, JPG, WEBP formats supported up to 10MB",
-          exampleLabel: "Or try with example images:",
-          examples: [
-            { label: "Example AI Profile", onClick: () => handleTriggerExample('image', 1) },
-            { label: "Example Camera Photo", onClick: () => handleTriggerExample('image', 2) }
-          ]
-        };
-      case 'video':
-        return {
-          accept: "video/*",
-          title: "Drag & drop a video or click",
-          desc: "MP4, MOV, WEBM formats supported up to 50MB",
-          exampleLabel: "Or try with example videos:",
-          examples: [
-            { label: "Example AI Lipsync", onClick: () => handleTriggerExample('video', 1) }
-          ]
-        };
-      case 'audio':
-        return {
-          accept: "audio/*",
-          title: "Drag & drop an audio file or click",
-          desc: "MP3, WAV, OGG, FLAC formats supported up to 20MB",
-          exampleLabel: "Or try with example voices:",
-          examples: [
-            { label: "Example Cloned Voice", onClick: () => handleTriggerExample('audio', 1) }
-          ]
-        };
-      default:
-        return {
-          accept: "image/*,video/*,audio/*",
-          title: "DRAG & DROP",
-          desc: "Images, Video, or Audio formats supported",
-          exampleLabel: "Try quick forensic samples:",
-          examples: [
-            { label: "Test AI Face", onClick: () => handleTriggerExample('image', 1) },
-            { label: "Test Cloned Speech", onClick: () => handleTriggerExample('audio', 1) }
-          ]
-        };
+    } else if (sample.file) {
+      setSelectedFileName(sample.file);
+      try {
+        const response = await fetch(`/images/${sample.file}`);
+        const blob = await response.blob();
+        const file = new File([blob], sample.file, { type: 'image/jpeg' });
+        await processFile(file, type || 'image');
+      } catch (err) {
+        setError('Could not load sample file.');
+      }
     }
   };
 
-  const specs = getUploadSpecs();
+  const getAcceptType = () => {
+    switch (activeTab) {
+      case 'image': return 'image/jpeg,image/png,image/webp,image/gif,image/bmp';
+      case 'video': return 'video/mp4,video/quicktime,video/webm,video/avi,video/mkv';
+      case 'audio': return 'audio/wav,audio/mpeg,audio/flac,audio/ogg,audio/aac,audio/mp3';
+      default: return '*/*';
+    }
+  };
 
   return (
-    <div id="upload-zone" className="upload-section container animate-fade-in">
-      <div className="upload-container">
-        {routeType === 'home' && (
-          <div className="upload-tabs">
+    <section id="upload-zone" className="upload-workspace container animate-slide-up">
+      <div className="workspace-card glass-card">
+        {/* Workspace Segmented Tabs */}
+        <div className="workspace-tabs-bar">
+          <div className="tabs-group">
             <button 
-              className={`tab-btn ${activeTab === 'file' ? 'active' : ''}`}
-              onClick={() => setActiveTab('file')}
+              className={`workspace-tab ${activeTab === 'image' ? 'active' : ''}`}
+              onClick={() => { setActiveTab('image'); if(setPreselectedType) setPreselectedType('image'); }}
             >
-              UPLOAD MEDIA
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                <circle cx="9" cy="9" r="2"/>
+                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+              </svg>
+              <span>Image</span>
             </button>
-            <button 
-              className={`tab-btn ${activeTab === 'text' ? 'active' : ''}`}
-              onClick={() => setActiveTab('text')}
-            >
-              VERIFY TEXT
-            </button>
-          </div>
-        )}
 
-        {activeTab === 'file' ? (
-          <div 
-            className={`drop-zone ${isDragging ? 'dragging' : ''} ${isAnalyzing ? 'analyzing' : ''}`}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-          >
-            <input 
-              type="file" 
-              id="file-upload" 
-              className="file-input" 
-              onChange={handleFileInput}
-              disabled={isAnalyzing}
-              accept={specs.accept}
-            />
-            
-            {isAnalyzing ? (
-              <div className="analyzing-state">
-                <div className="spinner-rings"></div>
-                <h3>ANALYZING CONTENT</h3>
-                <p>Running multimodal verification models...</p>
-              </div>
-            ) : (
-              <label htmlFor="file-upload" className="drop-content">
-                <div className="upload-icon">📁</div>
-                <h3>{specs.title}</h3>
-                <p>{specs.desc}</p>
-                <div className="btn btn-secondary">SELECT FILE</div>
-              </label>
-            )}
+            <button 
+              className={`workspace-tab ${activeTab === 'video' ? 'active' : ''}`}
+              onClick={() => { setActiveTab('video'); if(setPreselectedType) setPreselectedType('video'); }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="m22 8-6 4 6 4V8Z"/>
+                <rect width="14" height="12" x="2" y="6" rx="2"/>
+              </svg>
+              <span>Video</span>
+            </button>
+
+            <button 
+              className={`workspace-tab ${activeTab === 'audio' ? 'active' : ''}`}
+              onClick={() => { setActiveTab('audio'); if(setPreselectedType) setPreselectedType('audio'); }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" x2="12" y1="19" y2="22"/>
+              </svg>
+              <span>Audio / Voice</span>
+            </button>
+
+            <button 
+              className={`workspace-tab ${activeTab === 'text' ? 'active' : ''}`}
+              onClick={() => { setActiveTab('text'); if(setPreselectedType) setPreselectedType('text'); }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" x2="8" y1="13" y2="13"/>
+                <line x1="16" x2="8" y1="17" y2="17"/>
+              </svg>
+              <span>Text & Claims</span>
+            </button>
           </div>
-        ) : (
-          <div className="text-zone">
-            <textarea
-              className="text-input"
-              placeholder="Paste articles, claims, or emails here to detect misinformation and AI signatures..."
-              value={textInput}
-              onChange={(e) => setTextInput(e.target.value)}
-              disabled={isAnalyzing}
-            ></textarea>
-            <div className="text-actions">
-              <button 
-                className="btn btn-primary" 
-                onClick={handleTextAnalyze}
-                disabled={isAnalyzing || !textInput.trim()}
-              >
-                {isAnalyzing ? 'PROCESSING...' : 'RUN ANALYSIS'}
-              </button>
+
+
+        </div>
+
+        {/* Upload Body */}
+        <div className="workspace-body">
+          {activeTab !== 'text' ? (
+            <div 
+              className={`drop-area ${isDragging ? 'dragging' : ''} ${isAnalyzing ? 'analyzing' : ''}`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <input 
+                type="file" 
+                id="file-input-control" 
+                className="hidden-file-input" 
+                onChange={handleFileInput}
+                disabled={isAnalyzing}
+                accept={getAcceptType()}
+              />
+
+              {isAnalyzing ? (
+                <div className="processing-state animate-fade-in">
+                  <div className="telemetry-radar-spinner">
+                    <div className="radar-circle c1"></div>
+                    <div className="radar-circle c2"></div>
+                    <div className="radar-sweep"></div>
+                  </div>
+                  <div className="processing-text-block">
+                    <p className="processing-stage-label">{SCAN_STAGES[scanStageIdx]}</p>
+                    <p className="processing-sub">{selectedFileName || 'Processing file'}</p>
+                    
+                    <div className="scan-progress-track">
+                      <div 
+                        className="scan-progress-fill"
+                        style={{ width: `${Math.round(((scanStageIdx + 1) / SCAN_STAGES.length) * 100)}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <label htmlFor="file-input-control" className="drop-target-label">
+                  <div className="drop-icon-wrapper">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="17 8 12 3 7 8"/>
+                      <line x1="12" x2="12" y1="3" y2="15"/>
+                    </svg>
+                  </div>
+                  <div className="drop-text-block">
+                    <h3 className="drop-title">
+                      Drop your {activeTab} file here or <span className="browse-link">browse</span>
+                    </h3>
+                    <p className="drop-hint">
+                      Supported: {activeTab === 'image' ? 'JPG, PNG, WEBP, BMP, GIF' : activeTab === 'video' ? 'MP4, MOV, WEBM, AVI, MKV' : 'WAV, MP3, FLAC, OGG, AAC'} • Up to 100MB
+                    </p>
+                  </div>
+                </label>
+              )}
             </div>
-          </div>
-        )}
-        
-        {/* Render example files tailored to current section */}
-        {!isAnalyzing && (
-          <div className="example-picker-wrapper">
-            <p className="example-label">{specs.exampleLabel}</p>
-            <div className="example-buttons">
-              {specs.examples.map((ex, idx) => (
+          ) : (
+            <div className="text-input-area">
+              <textarea 
+                className="claim-textarea"
+                placeholder="Paste news articles, phishing emails, social media posts, or statements to verify for AI generation, scams, and fact discrepancies..."
+                value={textInput}
+                onChange={(e) => setTextInput(e.target.value)}
+                disabled={isAnalyzing}
+                rows={5}
+              />
+              <div className="text-actions-bar">
+                <div className="text-meta">
+                  <span className="char-counter">{textInput.length} chars</span>
+                  <span className="word-counter">{textInput.trim() ? textInput.trim().split(/\s+/).length : 0} words</span>
+                </div>
                 <button 
-                  key={idx} 
-                  className="btn btn-secondary btn-small"
-                  onClick={ex.onClick}
+                  className="btn btn-primary"
+                  onClick={handleTextAnalyze}
+                  disabled={isAnalyzing || !textInput.trim()}
                 >
-                  {ex.label}
+                  {isAnalyzing ? (
+                    <>
+                      <span className="status-dot active pulse"></span>
+                      Verifying...
+                    </>
+                  ) : (
+                    <>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polygon points="5 3 19 12 5 21 5 3"/>
+                      </svg>
+                      Analyze Text & Claims
+                    </>
+                  )}
                 </button>
-              ))}
+              </div>
             </div>
-          </div>
-        )}
-        
-        {error && <div className="error-message" style={{position: 'absolute', bottom: '-75px', left: '50%', transform: 'translateX(-50%)', color: 'var(--status-danger)'}}>{error}</div>}
+          )}
+
+          {error && (
+            <div className="error-banner animate-fade-in">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" x2="12" y1="8" y2="12"/>
+                <line x1="12" x2="12.01" y1="16" y2="16"/>
+              </svg>
+              <span>{error}</span>
+            </div>
+          )}
+
+          {/* Quick Benchmark Samples */}
+          {!isAnalyzing && (
+            <div className="samples-toolbar">
+              <span className="samples-label">Try a sample:</span>
+              <div className="sample-chips-grid">
+                {activeTab === 'image' && SAMPLES.image.map((s, i) => (
+                  <button key={i} className="sample-chip" onClick={() => loadSample(s, 'image')}>
+                    <span className={`chip-badge ${s.tag.toLowerCase()}`}>{s.tag}</span>
+                    <span className="chip-text">{s.label}</span>
+                  </button>
+                ))}
+                {activeTab === 'audio' && SAMPLES.audio.map((s, i) => (
+                  <button key={i} className="sample-chip" onClick={() => loadSample(s, 'audio')}>
+                    <span className={`chip-badge ${s.tag.toLowerCase()}`}>{s.tag}</span>
+                    <span className="chip-text">{s.label}</span>
+                  </button>
+                ))}
+                {activeTab === 'text' && SAMPLES.text.map((s, i) => (
+                  <button key={i} className="sample-chip" onClick={() => loadSample(s, 'text')}>
+                    <span className={`chip-badge ${s.tag.toLowerCase()}`}>{s.tag}</span>
+                    <span className="chip-text">{s.label}</span>
+                  </button>
+                ))}
+                {activeTab === 'video' && SAMPLES.video.map((s, i) => (
+                  <button key={i} className="sample-chip" onClick={() => loadSample(s, 'image')}>
+                    <span className={`chip-badge ${s.tag.toLowerCase()}`}>{s.tag}</span>
+                    <span className="chip-text">{s.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

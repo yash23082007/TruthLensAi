@@ -4,69 +4,63 @@ import './DifferentDeepfakes.css';
 const SAMPLES = [
   {
     id: 1,
-    title: "Social Media Profile",
-    percentage: "89%",
-    type: "Deepfake",
-    risk: "critical",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80",
-    label: "GAN Profile Swap Detected",
-    description: "AI-generated avatar mimicking a real user identity. Shows ultra-smooth skin texture and eye gaze misalignment.",
-    signals: "ELA mismatch σ=138.4 • Specular pupil reflection asymmetry"
+    title: "AI Generated Profile Portrait",
+    percentage: "94%",
+    type: "AI DETECTED",
+    risk: "danger",
+    image: "/images/sample_social.jpg",
+    label: "Diffusion Synthesis",
+    description: "Synthetic portrait showing characteristic DCT radial frequency spikes and bilateral eye reflection asymmetry."
   },
   {
     id: 2,
-    title: "Parade & Crowd Photos",
-    percentage: "45%",
-    type: "Manipulated",
+    title: "Pixel Cloned Event Photo",
+    percentage: "87%",
+    type: "SPLICED",
     risk: "warning",
-    image: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&auto=format&fit=crop&q=80",
-    label: "Cloned Background Splicing",
-    description: "Edited photograph with repeated crowd tiles cloned to artificially exaggerate public event attendance.",
-    signals: "Repeated pixel block hash correlation • Inconsistent ambient lighting"
+    image: "/images/sample_parade.jpg",
+    label: "Error Level Discontinuity",
+    description: "Cloned crowd regions identified via localized JPEG quantization table mismatches."
   },
   {
     id: 3,
-    title: "Financial Documents",
-    percentage: "31%",
-    type: "Low Risk",
+    title: "Authentic Banking Document",
+    percentage: "96%",
+    type: "AUTHENTIC",
     risk: "success",
-    image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600&auto=format&fit=crop&q=80",
-    label: "Clean Signature Scan",
-    description: "Scanned official PDF showing authentic compression quantization and consistent bank font baselines.",
-    signals: "Uniform 8x8 DCT quantization • Anti-counterfeit raster verified"
+    image: "/images/sample_finance.jpg",
+    label: "Hardware Scan",
+    description: "Intact physical scanner raster lines and uniform compression quantization tables across all zones."
   },
   {
     id: 4,
-    title: "Video Calls & Zoom Swaps",
-    percentage: "67%",
-    type: "High Risk",
-    risk: "critical",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&auto=format&fit=crop&q=80",
-    label: "Lip-Sync & Jitter Anomaly",
-    description: "Real-time face-swap model operating in a video conference. Displays boundary edge blur on head turns.",
-    signals: "Laplacian edge discontinuity • Temporal lighting jitter across frames"
+    title: "Real-Time Video Face Filter",
+    percentage: "91%",
+    type: "DEEPFAKE",
+    risk: "danger",
+    image: "/images/sample_videocall.jpg",
+    label: "Temporal Landmark Jitter",
+    description: "Real-time autoencoder face filter flagged by boundary blur during rapid head rotations."
   },
   {
     id: 5,
-    title: "News Broadcast Footage",
-    percentage: "15%",
-    type: "Authentic",
+    title: "DSLR Editorial News Photo",
+    percentage: "98%",
+    type: "AUTHENTIC",
     risk: "success",
-    image: "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=600&auto=format&fit=crop&q=80",
-    label: "Original EXIF Lineage Intact",
-    description: "Verified news media graphic with cryptographic camera signatures and untouched sensor noise floor.",
-    signals: "PRNU sensor noise match • C2PA hardware manifest valid"
+    image: "/images/sample_news.jpg",
+    label: "PRNU Sensor Match",
+    description: "Original camera sensor noise fingerprint present with intact unedited EXIF exposure parameters."
   },
   {
     id: 6,
-    title: "Scam Phone Calls",
-    percentage: "94%",
-    type: "Deepfake",
-    risk: "critical",
-    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=80",
-    label: "Cloned Neural Speech",
-    description: "Synthesized executive voice clone demanding urgent wire transfers. Displays flat pitch contour and zero-noise pauses.",
-    signals: "Robotic formant transition • Unnatural pitch variance (σ=0.4 Hz)"
+    title: "Neural Voice Phishing Call",
+    percentage: "95%",
+    type: "VOICE CLONE",
+    risk: "danger",
+    image: "/images/sample_scamcall.jpg",
+    label: "Acoustic MFCC Flattener",
+    description: "Synthetic text-to-speech clone exhibiting mathematically uniform pitch jitter and robotic silence intervals."
   }
 ];
 
@@ -83,17 +77,19 @@ const DifferentDeepfakes = ({ onSelectTool }) => {
 
   return (
     <section className="different-deepfakes-section container">
-      <div className="features-header left-aligned-section">
-        <div className="section-stamp">Multimodal Forensics Showcase</div>
-        <h2 className="section-main-title">DIFFERENT DEEPFAKE DETECTION SCENARIOS</h2>
+      <div className="section-header-block">
+        <div className="section-tag">Case Evidence</div>
+        <h2 className="section-main-title">Forensic Detection in Practice</h2>
         <p className="section-main-desc">
-          From social media bot detection to viral video debunking and phone scam audits, see how TruthLens identifies synthetic manipulation across all digital mediums.
+          Compare how our multi-vector neural ensemble detects synthetic generation, localized pixel splicing, and cloned voice notes across diverse file types.
         </p>
       </div>
 
       <div className="carousel-wrapper">
         <button className="carousel-arrow prev" onClick={handlePrev} aria-label="Previous samples">
-          ◀
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
         </button>
 
         <div className="carousel-grid">
@@ -102,26 +98,26 @@ const DifferentDeepfakes = ({ onSelectTool }) => {
               <div className="sample-img-box">
                 <img src={item.image} alt={item.title} className="sample-cover-img" />
                 <div className="sample-img-overlay">
-                  <span className={`risk-badge-tag ${item.risk}`}>
-                    {item.percentage} {item.type.toUpperCase()}
+                  <span className={`risk-badge-tag risk-${item.risk}`}>
+                    <span className="status-dot"></span>
+                    {item.percentage} {item.type}
                   </span>
                 </div>
               </div>
 
               <div className="sample-content-box">
-                <h3>{item.title}</h3>
                 <div className="sample-label-text">{item.label}</div>
+                <h3 className="sample-title">{item.title}</h3>
                 <p className="sample-desc-text">{item.description}</p>
-                <div className="sample-signals-strip">
-                  <strong>⚡ Evidence:</strong> {item.signals}
-                </div>
               </div>
             </div>
           ))}
         </div>
 
         <button className="carousel-arrow next" onClick={handleNext} aria-label="Next samples">
-          ▶
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="m9 18 6-6-6-6"/>
+          </svg>
         </button>
       </div>
 
@@ -129,10 +125,12 @@ const DifferentDeepfakes = ({ onSelectTool }) => {
         <button 
           className={`dot ${startIndex === 0 ? 'active' : ''}`}
           onClick={() => setStartIndex(0)}
+          aria-label="Slide group 1"
         ></button>
         <button 
           className={`dot ${startIndex === 3 ? 'active' : ''}`}
           onClick={() => setStartIndex(3)}
+          aria-label="Slide group 2"
         ></button>
       </div>
     </section>

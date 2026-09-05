@@ -5,7 +5,7 @@ from models.schemas import AnalysisResult, TextAnalysisRequest, ContentType
 from analyzers.text_analyzer import text_analyzer
 from analyzers.rag_verifier import rag_verifier
 from core.trust_score import trust_engine
-from datetime import datetime
+from datetime import datetime, timezone
 
 router = APIRouter(prefix="/api/analyze", tags=["Text Analysis"])
 
@@ -47,7 +47,7 @@ async def analyze_text(request: TextAnalysisRequest):
     return AnalysisResult(
         id=str(uuid.uuid4()),
         content_type=ContentType.TEXT,
-        timestamp=datetime.utcnow().isoformat(),
+        timestamp=datetime.now(timezone.utc).isoformat(),
         trust_score=trust_score,
         risk_level=risk_level,
         is_authentic=is_authentic,

@@ -7,7 +7,7 @@ from analyzers.ocr_engine import ocr_engine
 from analyzers.text_analyzer import text_analyzer
 from analyzers.rag_verifier import rag_verifier
 from core.trust_score import trust_engine
-from datetime import datetime
+from datetime import datetime, timezone
 from core.config import settings
 from core.upload_validation import validate_media
 
@@ -23,7 +23,7 @@ async def analyze_image(file: UploadFile = File(...)):
     all_details = []
 
     # Read file bytes
-    image_bytes = await file.read()
+    image_bytes = await file.read(15 * 1024 * 1024 + 1)
     validate_media(file, image_bytes, settings.ALLOWED_IMAGE_TYPES, 15)
 
     # Run image analysis
@@ -61,7 +61,7 @@ async def analyze_image(file: UploadFile = File(...)):
     return AnalysisResult(
         id=str(uuid.uuid4()),
         content_type=ContentType.IMAGE,
-        timestamp=datetime.utcnow().isoformat(),
+        timestamp=datetime.now(timezone.utc).isoformat(),
         trust_score=trust_score,
         risk_level=risk_level,
         is_authentic=is_authentic,

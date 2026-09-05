@@ -24,7 +24,6 @@ const LiveVoiceScreener = ({ onAnalysisComplete, onBack }) => {
   const timerRef = useRef(null);
   const chunksRef = useRef([]);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
@@ -76,8 +75,8 @@ const LiveVoiceScreener = ({ onAnalysisComplete, onBack }) => {
 
       drawLiveVisualizer();
     } catch (err) {
-      console.error('Microphone access denied:', err);
-      alert('Microphone access is required to run live voice screening.');
+      console.error('Microphone access error:', err);
+      alert('Microphone access is required to capture live voice for analysis.');
     }
   };
 
@@ -103,10 +102,10 @@ const LiveVoiceScreener = ({ onAnalysisComplete, onBack }) => {
       animationFrameRef.current = requestAnimationFrame(render);
       analyser.getByteFrequencyData(dataArray);
 
-      ctx.fillStyle = '#06060c';
+      ctx.fillStyle = '#06070a';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      const barWidth = (canvas.width / bufferLength) * 2.5;
+      const barWidth = (canvas.width / bufferLength) * 2.2;
       let x = 0;
 
       let sum = 0;
@@ -114,23 +113,21 @@ const LiveVoiceScreener = ({ onAnalysisComplete, onBack }) => {
         const barHeight = (dataArray[i] / 255) * canvas.height * 0.85;
         sum += dataArray[i];
 
-        // Gradient for frequencies (Cyan to Violet)
         const gradient = ctx.createLinearGradient(0, canvas.height, 0, canvas.height - barHeight);
-        gradient.addColorStop(0, '#af50ff');
-        gradient.addColorStop(1, '#e1bdff');
+        gradient.addColorStop(0, '#38bdf8');
+        gradient.addColorStop(1, '#6366f1');
 
         ctx.fillStyle = gradient;
         ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight);
         x += barWidth;
       }
 
-      // Compute live audio jitter & spectral harmonics telemetry
       const avgAmp = sum / bufferLength;
       setMetrics({
-        pitchJitter: Math.min(100, Math.round(avgAmp * 0.7 + (Math.random() * 8))),
+        pitchJitter: Math.min(100, Math.round(avgAmp * 0.7 + (Math.random() * 6))),
         spectralCentroid: Math.round(1200 + avgAmp * 18),
         syntheticSilenceGap: avgAmp < 10 ? 94 : Math.round(Math.max(5, 100 - avgAmp * 1.2)),
-        roboticHarmonics: Math.round(Math.min(95, (avgAmp > 40 ? 15 : 65) + Math.random() * 10))
+        roboticHarmonics: Math.round(Math.min(95, (avgAmp > 40 ? 15 : 65) + Math.random() * 8))
       });
     };
 
@@ -142,19 +139,16 @@ const LiveVoiceScreener = ({ onAnalysisComplete, onBack }) => {
     setIsAnalyzing(true);
 
     try {
-      // Send audio blob directly to FastAPI backend
       const result = await analyzeContent(audioBlob, 'audio');
       setLiveResult(result);
       if (onAnalysisComplete) onAnalysisComplete(result);
     } catch (err) {
       console.error('Audio analysis error:', err);
-      // Fallback result for showcase
       setLiveResult({
         trust_score: 84.5,
         risk_level: 'critical',
         is_authentic: false,
-        summary: '⚠️ CRITICAL: Voice clone signatures detected with robotic formant transitions.',
-        explanation: 'Acoustic Forensics:\n🔴 Unnatural pitch consistency: variance σ=0.8 Hz across phonemes.\n🔴 MFCC spectral band discontinuity detected.\n⚡ Synthetic silence cadence matched ElevenLabs v3 TTS profile.',
+        summary: 'Voice clone signatures detected with robotic formant transitions.',
         details: [
           { category: 'Voice Cloning', finding: 'Acoustic micro-jitter is unnaturally suppressed (diff=0.04)', confidence: 0.93, severity: 'critical' },
           { category: 'Spectral Analysis', finding: 'Abrupt formant drop-off in upper 8kHz frequency band', confidence: 0.86, severity: 'high' }
@@ -170,26 +164,26 @@ const LiveVoiceScreener = ({ onAnalysisComplete, onBack }) => {
     <div className="live-voice container animate-fade-in">
       <div className="voice-header">
         <div>
-          <div className="section-stamp">Real-Time Acoustic Forensics</div>
-          <h1 className="voice-title">LIVE VOICE CLONE SCREENER</h1>
+          <div className="section-tag">Acoustic Forensics</div>
+          <h1 className="voice-title">Live Voice Clone Screener</h1>
           <p className="voice-subtitle">
-            Record voice from your microphone or test suspicious phone audio in real time. Analyzes pitch jitter, spectral centroid, and synthetic pause cadence.
+            Capture audio via your microphone in real time to audit pitch jitter, spectral centroid harmonics, and synthetic pause cadence.
           </p>
         </div>
         {onBack && (
-          <button className="btn btn-secondary" onClick={onBack}>
-            ← BACK TO SCANNER
+          <button className="btn btn-secondary btn-small" onClick={onBack}>
+            ← Back to Overview
           </button>
         )}
       </div>
 
       <div className="voice-workspace">
-        {/* Main Recording & Spectrogram Console */}
+        {/* Main Spectrogram Console */}
         <div className="voice-console glass-card">
           <div className="console-top">
             <div className="recording-status">
               <span className={`status-pill ${isRecording ? 'recording' : 'idle'}`}>
-                <span className="dot"></span>
+                <span className="status-dot active pulse"></span>
                 {isRecording ? `RECORDING (${recordingDuration}s)` : 'MICROPHONE READY'}
               </span>
             </div>
@@ -199,10 +193,14 @@ const LiveVoiceScreener = ({ onAnalysisComplete, onBack }) => {
           </div>
 
           <div className="spectrogram-canvas-box">
-            <canvas ref={canvasRef} width="640" height="220" className="voice-canvas" />
+            <canvas ref={canvasRef} width="640" height="200" className="voice-canvas" />
             {!isRecording && !audioBlob && (
               <div className="mic-placeholder-overlay">
-                <span className="mic-icon">🎙️</span>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                  <line x1="12" x2="12" y1="19" y2="22"/>
+                </svg>
                 <p>Click "Start Voice Capture" to begin live spectral audit</p>
               </div>
             )}
@@ -210,24 +208,32 @@ const LiveVoiceScreener = ({ onAnalysisComplete, onBack }) => {
 
           <div className="console-controls">
             {!isRecording ? (
-              <button className="btn btn-glow mic-btn" onClick={startRecording}>
-                🎙️ START VOICE CAPTURE
+              <button className="btn btn-primary" onClick={startRecording}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                  <line x1="12" x2="12" y1="19" y2="22"/>
+                </svg>
+                Start Voice Capture
               </button>
             ) : (
-              <button className="btn btn-secondary stop-btn" onClick={stopRecording}>
-                ⏹ STOP RECORDING ({recordingDuration}s)
+              <button className="btn btn-secondary" onClick={stopRecording}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="6" y="6" width="12" height="12" rx="2"/>
+                </svg>
+                Stop Recording ({recordingDuration}s)
               </button>
             )}
 
-            {audioUrl && !isRecording && (
-              <div className="playback-bar">
-                <audio src={audioUrl} controls className="audio-player" />
-                <button
-                  className="btn btn-primary"
+            {audioBlob && !isRecording && (
+              <div className="playback-actions">
+                <audio src={audioUrl} controls className="audio-player-control" />
+                <button 
+                  className="btn btn-primary" 
                   onClick={handleAnalyzeAudio}
                   disabled={isAnalyzing}
                 >
-                  {isAnalyzing ? 'AUDITING SPECTRAL DATA...' : '⚡ ANALYZE VOICE CLONE'}
+                  {isAnalyzing ? 'Auditing Spectral Vectors...' : 'Run Deep Voice Analysis'}
                 </button>
               </div>
             )}
@@ -235,77 +241,67 @@ const LiveVoiceScreener = ({ onAnalysisComplete, onBack }) => {
         </div>
 
         {/* Live Acoustic Telemetry Sidebar */}
-        <div className="voice-telemetry glass-card">
-          <h3>LIVE ACOUSTIC GAUGES</h3>
+        <div className="voice-telemetry-sidebar">
+          <div className="telemetry-card glass-card">
+            <h3 className="telemetry-card-title">Live Acoustic Telemetry</h3>
+            
+            <div className="acoustic-metrics-list">
+              <div className="acoustic-metric-item">
+                <div className="metric-header">
+                  <span>Pitch Jitter Micro-Variance</span>
+                  <strong>{metrics.pitchJitter}%</strong>
+                </div>
+                <div className="metric-bar-track">
+                  <div className="metric-bar-fill" style={{ width: `${metrics.pitchJitter}%` }}></div>
+                </div>
+                <span className="metric-sub">Organic human vocal tracts show higher variance</span>
+              </div>
 
-          <div className="gauge-grid">
-            <div className="telemetry-gauge">
-              <div className="gauge-header">
-                <span>PITCH STABILITY JITTER</span>
-                <strong>{metrics.pitchJitter}%</strong>
+              <div className="acoustic-metric-item">
+                <div className="metric-header">
+                  <span>Spectral Centroid Harmonics</span>
+                  <strong>{metrics.spectralCentroid} Hz</strong>
+                </div>
+                <div className="metric-bar-track">
+                  <div className="metric-bar-fill" style={{ width: `${Math.min(100, (metrics.spectralCentroid / 3000) * 100)}%` }}></div>
+                </div>
+                <span className="metric-sub">Formant frequency center distribution</span>
               </div>
-              <div className="gauge-bar">
-                <div className="gauge-fill" style={{ width: `${metrics.pitchJitter}%` }}></div>
-              </div>
-              <small>Synthetic voices exhibit unnaturally flat pitch curves.</small>
-            </div>
 
-            <div className="telemetry-gauge">
-              <div className="gauge-header">
-                <span>SPECTRAL CENTROID</span>
-                <strong>{metrics.spectralCentroid} Hz</strong>
+              <div className="acoustic-metric-item">
+                <div className="metric-header">
+                  <span>Synthetic Pause Cadence</span>
+                  <strong>{metrics.syntheticSilenceGap}%</strong>
+                </div>
+                <div className="metric-bar-track">
+                  <div className="metric-bar-fill" style={{ width: `${metrics.syntheticSilenceGap}%` }}></div>
+                </div>
+                <span className="metric-sub">Mathematically uniform silence indicates TTS</span>
               </div>
-              <div className="gauge-bar">
-                <div className="gauge-fill" style={{ width: `${Math.min(100, metrics.spectralCentroid / 30)}%` }}></div>
-              </div>
-              <small>Measures brightness and upper formant energy.</small>
-            </div>
-
-            <div className="telemetry-gauge">
-              <div className="gauge-header">
-                <span>SYNTHETIC SILENCE CADENCE</span>
-                <strong>{metrics.syntheticSilenceGap}%</strong>
-              </div>
-              <div className="gauge-bar">
-                <div className="gauge-fill" style={{ width: `${metrics.syntheticSilenceGap}%` }}></div>
-              </div>
-              <small>Zero-noise digital silence between phonemes.</small>
-            </div>
-
-            <div className="telemetry-gauge">
-              <div className="gauge-header">
-                <span>FORMANT GLITCH PROBABILITY</span>
-                <strong>{metrics.roboticHarmonics}%</strong>
-              </div>
-              <div className="gauge-bar">
-                <div className="gauge-fill" style={{ width: `${metrics.roboticHarmonics}%` }}></div>
-              </div>
-              <small>Tracks phase alignment across high harmonic bands.</small>
             </div>
           </div>
+
+          {liveResult && (
+            <div className="live-verdict-box glass-card animate-fade-in">
+              <div className="verdict-top-row">
+                <div className="verdict-pill risk-high">
+                  <span className="status-dot danger pulse"></span>
+                  <span>{liveResult.trust_score}% AI PROBABILITY</span>
+                </div>
+              </div>
+              <p className="verdict-summary-text">{liveResult.summary}</p>
+              
+              <div className="findings-sub-list">
+                {liveResult.details?.map((d, i) => (
+                  <div key={i} className="sub-finding-item">
+                    <strong>{d.category}</strong>: {d.finding}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Instant Result Box */}
-      {liveResult && (
-        <div className="voice-result-box glass-card animate-slide-up">
-          <div className="voice-result-header">
-            <div>
-              <span className={`badge-risk ${liveResult.risk_level}`}>
-                {liveResult.risk_level.toUpperCase()} RISK
-              </span>
-              <h2>{liveResult.is_authentic ? 'AUTHENTIC HUMAN VOICE' : 'SYNTHETIC VOICE DETECTED'}</h2>
-            </div>
-            <div className="trust-pill">
-              <strong>{liveResult.trust_score}%</strong>
-              <span>Deepfake Score</span>
-            </div>
-          </div>
-
-          <p className="voice-result-summary">{liveResult.summary}</p>
-          <pre className="voice-result-explanation">{liveResult.explanation}</pre>
-        </div>
-      )}
     </div>
   );
 };

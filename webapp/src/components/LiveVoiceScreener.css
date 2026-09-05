@@ -1,34 +1,35 @@
 .live-voice {
-  padding: 40px 0 80px;
+  padding: 32px 0 48px;
 }
 
 .voice-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 28px;
+  align-items: flex-start;
+  margin-bottom: 24px;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 16px;
 }
 
 .voice-title {
-  font-size: 2.4rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-bottom: 8px;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  letter-spacing: -0.025em;
 }
 
 .voice-subtitle {
+  font-size: 13.5px;
   color: var(--text-secondary);
-  max-width: 650px;
-  font-size: 1rem;
+  max-width: 620px;
 }
 
+/* Workspace */
 .voice-workspace {
   display: grid;
   grid-template-columns: 1fr 340px;
-  gap: 24px;
-  margin-bottom: 24px;
+  gap: 20px;
 }
 
 @media (max-width: 900px) {
@@ -38,65 +39,49 @@
 }
 
 .voice-console {
-  padding: 24px;
-  background: #030306;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .console-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  padding: 12px 18px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .status-pill {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-family: var(--font-mono);
   font-size: 11px;
-  padding: 4px 12px;
-  border-radius: 20px;
-  background: var(--bg-primary);
-  border: 1px solid var(--border-light);
+  font-weight: 700;
+  color: var(--text-muted);
 }
 
 .status-pill.recording {
-  border-color: var(--status-danger);
   color: var(--status-danger);
-}
-
-.status-pill.recording .dot {
-  background: var(--status-danger);
-  animation: pulse 1s infinite;
-}
-
-.status-pill.idle {
-  color: var(--status-success);
-}
-
-.status-pill.idle .dot {
-  background: var(--status-success);
 }
 
 .format-tag {
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
+  font-size: 10.5px;
   color: var(--text-muted);
 }
 
 .spectrogram-canvas-box {
   position: relative;
-  width: 100%;
+  background: #040508;
   height: 220px;
-  background: #06060c;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid var(--border-light);
-  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .voice-canvas {
@@ -107,179 +92,130 @@
 
 .mic-placeholder-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  background: rgba(6, 6, 12, 0.85);
-  gap: 8px;
-}
-
-.mic-icon {
-  font-size: 2.2rem;
-}
-
-.mic-placeholder-overlay p {
+  gap: 10px;
+  color: var(--text-muted);
   font-size: 13px;
-  font-family: var(--font-mono);
-  color: var(--text-secondary);
+}
+
+.mic-placeholder-overlay svg {
+  color: var(--accent-cyan);
 }
 
 .console-controls {
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
+  align-items: center;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-subtle);
 }
 
-.mic-btn, .stop-btn {
-  width: 100%;
-  padding: 14px;
-  font-size: 13px;
-}
-
-.stop-btn {
-  background: var(--status-danger);
-  border-color: var(--status-danger);
-  color: #fff;
-}
-
-.playback-bar {
+.playback-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
-  background: var(--bg-primary);
-  border: 1px solid var(--border-light);
-  padding: 12px 16px;
-  border-radius: 10px;
+  gap: 12px;
+  width: 100%;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
-.audio-player {
-  flex: 1;
-  min-width: 220px;
+.audio-player-control {
   height: 36px;
+  max-width: 320px;
 }
 
 /* Telemetry Sidebar */
-.voice-telemetry {
-  padding: 24px;
-}
-
-.voice-telemetry h3 {
-  font-size: 12px;
-  font-family: var(--font-mono);
-  letter-spacing: 0.15em;
-  color: var(--text-muted);
-  margin-bottom: 20px;
-}
-
-.gauge-grid {
+.voice-telemetry-sidebar {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 }
 
-.telemetry-gauge .gauge-header {
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--text-secondary);
-  margin-bottom: 6px;
-}
-
-.telemetry-gauge .gauge-header strong {
-  color: var(--accent-cyan);
-  font-size: 12px;
-}
-
-.gauge-bar {
-  width: 100%;
-  height: 6px;
-  background: var(--bg-primary);
-  border-radius: 3px;
-  overflow: hidden;
-  margin-bottom: 4px;
-}
-
-.gauge-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #af50ff, #e1bdff);
-  transition: width 0.3s ease;
-}
-
-.telemetry-gauge small {
-  font-size: 11px;
-  color: var(--text-muted);
-  line-height: 1.3;
-  display: block;
-}
-
-/* Result Box */
-.voice-result-box {
-  padding: 28px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-light);
-  margin-top: 16px;
-}
-
-.voice-result-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.badge-risk {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  padding: 4px 8px;
-  border-radius: 4px;
-  display: inline-block;
-  margin-bottom: 6px;
-}
-
-.badge-risk.critical { background: rgba(255, 77, 77, 0.2); color: var(--status-danger); }
-.badge-risk.low { background: rgba(36, 180, 126, 0.2); color: var(--status-success); }
-
-.trust-pill {
+.telemetry-card {
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  gap: 14px;
 }
 
-.trust-pill strong {
-  font-family: var(--font-mono);
-  font-size: 2rem;
-  color: var(--status-danger);
-}
-
-.trust-pill span {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-muted);
-}
-
-.voice-result-summary {
+.telemetry-card-title {
   font-size: 14px;
+  font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 12px;
-  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
-.voice-result-explanation {
-  background: var(--bg-primary);
-  border: 1px solid var(--border-light);
-  border-radius: 8px;
-  padding: 14px;
-  font-family: var(--font-mono);
-  font-size: 12px;
+.acoustic-metrics-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.acoustic-metric-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11.5px;
   color: var(--text-secondary);
-  white-space: pre-wrap;
-  line-height: 1.6;
+}
+
+.metric-header strong {
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+}
+
+.metric-bar-track {
+  width: 100%;
+  height: 4px;
+  background: var(--bg-overlay);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.metric-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #38bdf8, #6366f1);
+  transition: width 0.2s ease;
+}
+
+.metric-sub {
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+
+.live-verdict-box {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.verdict-summary-text {
+  font-size: 12.5px;
+  color: var(--text-primary);
+  line-height: 1.45;
+}
+
+.findings-sub-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+
+.sub-finding-item {
+  background: var(--bg-elevated);
+  padding: 6px 10px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border-subtle);
 }

@@ -4,37 +4,37 @@ import './C2PAInspector.css';
 const SAMPLE_METADATA = [
   {
     id: 'meta-ai',
-    title: 'Midjourney v6.1 Generation (Cryptographic Signature Missing)',
+    title: 'Midjourney v6.1 AI Generation',
     status: 'FLAGGED',
     provenance: 'UNVERIFIED',
     generator: 'Midjourney Prompt Diffusion Engine',
-    camera: 'None (Pure Computational Render)',
+    camera: 'None (Pure Computational Latent Render)',
     lens: 'N/A',
     software: 'Automatic1111 / ComfyUI / Midjourney Bot',
-    c2pa_manifest: 'ABSENT',
-    prnu_sensor_pattern: 'UNNATURAL (No Silicon Substrate PRNU Detected)',
+    c2pa_manifest: 'ABSENT (No Cryptographic Hardware Root)',
+    prnu_sensor_pattern: 'UNNATURAL (No Silicon Photo-Diode Noise Floor)',
     details: [
       { key: 'EXIF Tag 0x0131 (Software)', value: 'Midjourney v6.1 AI Generator' },
-      { key: 'Color Profile', value: 'sRGB IEC61966-2.1 (Standard Synthesized)' },
-      { key: 'Compression Quantization', value: 'Quantization Matrix Table Non-Standard (GAN spill)' },
-      { key: 'Digital Watermark (SynthID)', value: 'Positive AI latent watermark match (97.4%)' }
+      { key: 'Color Profile', value: 'sRGB IEC61966-2.1 (Synthesized Gamut)' },
+      { key: 'Quantization Matrix Table', value: 'Non-Standard Custom Coefficients (Diffusion Noise)' },
+      { key: 'Latent Watermark (SynthID)', value: 'Positive AI latent watermark match (97.4%)' }
     ]
   },
   {
     id: 'meta-real',
-    title: 'Sony Alpha A7R V (Hardware Authenticated)',
+    title: 'Sony Alpha A7R V Camera Capture',
     status: 'AUTHENTIC',
     provenance: 'VERIFIED',
-    generator: 'Physical Optical Sensor',
+    generator: 'Physical Optical Sensor (Exmor R CMOS)',
     camera: 'Sony ILCE-7RM5',
     lens: 'FE 24-70mm F2.8 GM II',
     software: 'Sony Camera OS Firmware v2.01',
-    c2pa_manifest: 'C2PA-v1.3 VALID (Signed by Sony PKI Root)',
+    c2pa_manifest: 'VALID C2PA v1.3 (Signed by Sony PKI Hardware Root)',
     prnu_sensor_pattern: 'AUTHENTIC (Silicon Photo-Diode Noise Floor Match)',
     details: [
       { key: 'Exposure Time', value: '1/250 sec at f/4.0, ISO 100' },
       { key: 'GPS Geolocation Tag', value: '37.7749° N, 122.4194° W' },
-      { key: 'Shutter Count Signature', value: 'Actuation #14,821 verified' },
+      { key: 'Mechanical Shutter Count', value: 'Actuation #14,821 verified' },
       { key: 'Cryptographic C2PA Signature', value: 'SHA-384 RSA-4096 valid hardware key' }
     ]
   }
@@ -47,15 +47,15 @@ const C2PAInspector = ({ onBack }) => {
     <div className="c2pa-inspector container animate-fade-in">
       <div className="c2pa-header">
         <div>
-          <div className="section-stamp">Provenance & Cryptographic Auditing</div>
-          <h1 className="c2pa-title">C2PA & CONTENT CREDENTIALS AUDITOR</h1>
+          <div className="section-tag">Provenance & Cryptographic Auditing</div>
+          <h1 className="c2pa-title">C2PA & Content Credentials Auditor</h1>
           <p className="c2pa-subtitle">
-            Inspect hardware camera sensor PRNU noise, Adobe Content Authenticity Initiative (C2PA) digital signatures, and AI watermark provenance headers.
+            Inspect physical camera sensor PRNU noise, Adobe Content Authenticity Initiative (C2PA) digital signatures, and AI watermark provenance headers.
           </p>
         </div>
         {onBack && (
-          <button className="btn btn-secondary" onClick={onBack}>
-            ← BACK TO SCANNER
+          <button className="btn btn-secondary btn-small" onClick={onBack}>
+            ← Back to Overview
           </button>
         )}
       </div>
@@ -63,16 +63,18 @@ const C2PAInspector = ({ onBack }) => {
       {/* Selector */}
       <div className="c2pa-presets">
         <span className="preset-label">INSPECTION PRESETS:</span>
-        {SAMPLE_METADATA.map((sample) => (
-          <button
-            key={sample.id}
-            className={`c2pa-chip ${selectedMeta.id === sample.id ? 'active' : ''}`}
-            onClick={() => setSelectedMeta(sample)}
-          >
-            <span className={`status-dot ${sample.status.toLowerCase()}`}></span>
-            {sample.title}
-          </button>
-        ))}
+        <div className="presets-list">
+          {SAMPLE_METADATA.map((sample) => (
+            <button
+              key={sample.id}
+              className={`preset-chip ${selectedMeta.id === sample.id ? 'active' : ''}`}
+              onClick={() => setSelectedMeta(sample)}
+            >
+              <span className={`status-dot ${sample.status === 'AUTHENTIC' ? 'authentic' : 'danger'}`}></span>
+              <span>{sample.title}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Main Grid */}
@@ -80,7 +82,7 @@ const C2PAInspector = ({ onBack }) => {
         {/* Left: Provenance Summary */}
         <div className="c2pa-summary-card glass-card">
           <div className="c2pa-top">
-            <span className={`c2pa-badge ${selectedMeta.status.toLowerCase()}`}>
+            <span className={`signal-severity-tag sev-${selectedMeta.status === 'AUTHENTIC' ? 'low' : 'critical'}`}>
               {selectedMeta.status}
             </span>
             <span className="c2pa-id">MANIFEST AUDIT</span>
@@ -114,9 +116,9 @@ const C2PAInspector = ({ onBack }) => {
           </div>
         </div>
 
-        {/* Right: Granular EXIF & IPTC Header Breakdown */}
+        {/* Right: Embedded Header Breakdown */}
         <div className="c2pa-details-card glass-card">
-          <h3>EMBEDDED METADATA AUDIT STREAM</h3>
+          <h3 className="details-card-title">Embedded Metadata Audit Stream</h3>
 
           <div className="tags-table">
             <div className="tags-head">
@@ -132,9 +134,9 @@ const C2PAInspector = ({ onBack }) => {
           </div>
 
           <div className="c2pa-advisory">
-            <strong>ℹ️ FORENSIC ADVISORY:</strong>
+            <span className="advisory-title">FORENSIC ADVISORY</span>
             <p>
-              Metadata can be stripped by social media compression pipelines. TruthLens combines C2PA manifest audits with neural pixel-level heuristics to provide reliable verification even when EXIF headers have been cleared.
+              Metadata can be stripped by social media re-compression. TruthLens combines C2PA manifest checks with pixel-level heuristics to provide reliable verification even when EXIF headers have been cleared.
             </p>
           </div>
         </div>

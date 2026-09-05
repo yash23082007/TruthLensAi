@@ -1,108 +1,40 @@
-.hero {
-  padding: 60px 0 40px;
-  text-align: left;
+.hero-section {
+  padding: 64px 0 16px;
 }
 
-.hero-content {
-  max-width: 900px;
-}
-
-.hero-title {
-  font-size: 3.2rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  margin-bottom: 20px;
-}
-
-.hero-subtitle {
-  font-size: 1.15rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: 28px;
-  max-width: 720px;
-}
-
-.hero-social-proof {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 32px;
-  flex-wrap: wrap;
-}
-
-.avatar-stack {
-  display: flex;
-  align-items: center;
-}
-
-.user-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 2px solid var(--bg-primary);
-  margin-left: -10px;
-  object-fit: cover;
-}
-
-.user-avatar:first-child {
-  margin-left: 0;
-}
-
-.proof-details {
+.hero-inner {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-}
-
-.stars-row {
-  display: flex;
   align-items: center;
-  gap: 3px;
-  color: #fbbf24;
-  font-size: 14px;
 }
 
-.rating-num {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: bold;
-  color: var(--text-primary);
-  margin-left: 6px;
+.hero-heading {
+  font-size: 2.8rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  margin-bottom: 16px;
 }
 
-.proof-text {
-  font-size: 12px;
+@media (max-width: 640px) {
+  .hero-heading { font-size: 2rem; }
+  .hero-section { padding: 40px 0 12px; }
+}
+
+.hero-description {
+  font-size: 1.05rem;
+  line-height: 1.6;
   color: var(--text-secondary);
-  font-family: var(--font-mono);
-}
-
-.hero-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+  max-width: 480px;
   margin-bottom: 28px;
 }
 
-.hero-btn {
-  padding: 14px 28px;
-  font-size: 12px;
-}
-
-.hero-pills-row {
+.hero-cta-group {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
-}
-
-.h-pill {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-@media (max-width: 768px) {
-  .hero-title {
-    font-size: 2.2rem;
-  }
+  justify-content: center;
 }

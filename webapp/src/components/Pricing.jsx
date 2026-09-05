@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import './Pricing.css';
 
 const CREDIT_PACKAGES = [
-  { credits: 50, price: "$5", savings: "Standard Rate", perScan: "$0.10 / scan", popular: false },
-  { credits: 100, price: "$9", savings: "Save 40%", perScan: "$0.09 / scan", popular: false },
-  { credits: 400, price: "$19", savings: "Save 50% • Most Popular", perScan: "$0.04 / scan", popular: true },
-  { credits: 800, price: "$36", savings: "Save 60% • Pro Best Value", perScan: "$0.03 / scan", popular: false },
+  { credits: 50, price: "$5", rate: "$0.10 / scan" },
+  { credits: 100, price: "$9", rate: "$0.09 / scan" },
+  { credits: 400, price: "$19", rate: "$0.04 / scan", popular: true },
+  { credits: 800, price: "$36", rate: "$0.03 / scan" },
 ];
 
 const Pricing = ({ onTryFree }) => {
@@ -13,48 +13,58 @@ const Pricing = ({ onTryFree }) => {
 
   return (
     <div className="pricing-section container animate-fade-in">
-      <div className="pricing-header">
-        <div className="section-stamp">Transparent Verification Plans</div>
-        <h1 className="pricing-main-title">SIMPLE, TRANSPARENT PRICING</h1>
-        <p className="pricing-main-desc">
-          Start 100% free with no account required. Upgrade for high-volume enterprise API access, batch analysis, and cryptographic certification.
+      <div className="section-header-block centered">
+        <div className="section-tag">Plans & Licensing</div>
+        <h1 className="section-main-title">Transparent, Scalable Verification Pricing</h1>
+        <p className="section-main-desc">
+          Free to use for everyday verification. Pay-as-you-go credit packages and REST API access available for newsrooms, developers, and platforms.
         </p>
       </div>
 
-      {/* 3 Tier Main Grid */}
       <div className="pricing-grid-triad">
         {/* Tier 1: Free Community */}
         <div className="glass-card plan-card">
-          <div className="plan-badge-top">COMMUNITY</div>
-          <h3 className="plan-name">FREE TIER</h3>
+          <div className="plan-badge-top">COMMUNITY TIER</div>
+          <h3 className="plan-name">Researcher Free</h3>
           <div className="plan-price">
             <span className="price-val">$0</span>
-            <span className="price-term">/ FOREVER</span>
+            <span className="price-term">/ forever</span>
           </div>
-          <p className="plan-summary">Perfect for individuals, teachers, and casual fact-checking.</p>
+          <p className="plan-summary">For casual fact-checking, students, and journalists.</p>
           <ul className="plan-perks">
-            <li>✓ 100% Free Instant Online Analysis</li>
-            <li>✓ Image, Video, Audio & Text Verification</li>
-            <li>✓ Error Level Analysis (ELA) Heatmaps</li>
-            <li>✓ No Account or Credit Card Required</li>
-            <li>✓ Zero Data Retention (Privacy-by-Design)</li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>Instant online image, video, audio & text scans</span>
+            </li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>Unified Trust Score and anomaly breakdown</span>
+            </li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>Zero data retention (privacy enforced)</span>
+            </li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>No credit card or registration required</span>
+            </li>
           </ul>
           <button className="btn btn-secondary plan-action-btn" onClick={onTryFree}>
-            START FREE SCAN
+            Start Free Scan
           </button>
         </div>
 
-        {/* Tier 2: Credit Packs */}
+        {/* Tier 2: Pay As You Go */}
         <div className="glass-card plan-card featured">
-          <div className="plan-badge-top highlight">POPULAR • NO EXPIRATION</div>
-          <h3 className="plan-name">CREDIT PACKAGES</h3>
+          <div className="plan-badge-top highlight">PAY AS YOU GO</div>
+          <h3 className="plan-name">Forensic Credits</h3>
           <div className="plan-price">
             <span className="price-val">{selectedPack.price}</span>
-            <span className="price-term">ONE-TIME</span>
+            <span className="price-term">one-time</span>
           </div>
-          <p className="plan-summary">Lifetime validity. Ideal for researchers and frequent fact-checkers.</p>
+          <p className="plan-summary">Credits never expire. High-resolution batch processing.</p>
           
-          {/* Credit Pack Selector Buttons */}
+          {/* Credit Pack Selector */}
           <div className="credit-chips-selector">
             {CREDIT_PACKAGES.map((pkg, i) => (
               <button
@@ -62,40 +72,64 @@ const Pricing = ({ onTryFree }) => {
                 className={`credit-chip ${selectedPack.credits === pkg.credits ? 'active' : ''}`}
                 onClick={() => setSelectedPack(pkg)}
               >
-                <strong>{pkg.credits} CREDITS</strong>
-                <span>{pkg.price} USD</span>
+                <strong>{pkg.credits} Credits</strong>
+                <span>{pkg.price}</span>
               </button>
             ))}
           </div>
 
           <ul className="plan-perks">
-            <li>✓ {selectedPack.credits} Deep Forensic Analysis Credits</li>
-            <li>✓ High-Resolution Multi-Frame Video Auditing</li>
-            <li>✓ Downloadable Cryptographic PDF Certificates</li>
-            <li>✓ Credits Never Expire • Lifetime Balance</li>
-            <li>✓ Priority Neural Pipeline Queue</li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>{selectedPack.credits} deep neural forensic scan credits</span>
+            </li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>Exportable Cryptographic PDF & JSON certificates</span>
+            </li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>Priority GPU inference queue processing</span>
+            </li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>Frame-by-frame 4K video deepfake audits</span>
+            </li>
           </ul>
-          <button className="btn btn-glow plan-action-btn" onClick={() => alert(`Proceeding to secure checkout for ${selectedPack.credits} credits (${selectedPack.price}).`)}>
-            BUY {selectedPack.credits} CREDITS ({selectedPack.price})
+          <button 
+            className="btn btn-primary plan-action-btn" 
+            onClick={() => alert(`Selected ${selectedPack.credits} credits package for ${selectedPack.price}.`)}
+          >
+            Purchase {selectedPack.credits} Credits ({selectedPack.price})
           </button>
         </div>
 
-        {/* Tier 3: Enterprise & Developer API */}
+        {/* Tier 3: Developer API */}
         <div className="glass-card plan-card">
-          <div className="plan-badge-top">ENTERPRISE & API</div>
-          <h3 className="plan-name">BUSINESS PRO</h3>
+          <div className="plan-badge-top">DEVELOPER API</div>
+          <h3 className="plan-name">Enterprise API</h3>
           <div className="plan-price">
             <span className="price-val">$99</span>
-            <span className="price-term">/ MONTH</span>
+            <span className="price-term">/ month</span>
           </div>
-          <p className="plan-summary">For newsrooms, finTech platforms, and security operations centers.</p>
+          <p className="plan-summary">High-throughput REST endpoints and automated webhooks.</p>
           <ul className="plan-perks">
-            <li>✓ Unlimited REST API Verification Calls</li>
-            <li>✓ Sub-100ms Ultra-Low Latency SLA</li>
-            <li>✓ C2PA Cryptographic Signature Verification</li>
-            <li>✓ Webhook Automation & Real-Time Alerts</li>
-            <li>✓ Dedicated Enterprise Account Manager</li>
-            <li>✓ On-Premise / Self-Host Deployment Options</li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>REST API endpoints (sub-100ms response)</span>
+            </li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>C2PA hardware cryptographic signature verification</span>
+            </li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>Webhook notifications and automated batch scanning</span>
+            </li>
+            <li>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>Self-hosting Docker & on-premise support</span>
+            </li>
           </ul>
           <a
             className="btn btn-secondary plan-action-btn"
@@ -103,33 +137,8 @@ const Pricing = ({ onTryFree }) => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            CONTACT ENTERPRISE
+            View Documentation
           </a>
-        </div>
-      </div>
-
-      {/* Trust & Guarantee Grid */}
-      <div className="pricing-trust-banner glass-card">
-        <div className="p-trust-col">
-          <span className="p-trust-icon">🔒</span>
-          <div>
-            <h4>Privacy-First Default</h4>
-            <p>Your uploaded media is processed in volatile memory and deleted immediately post-scan.</p>
-          </div>
-        </div>
-        <div className="p-trust-col">
-          <span className="p-trust-icon">⚡</span>
-          <div>
-            <h4>Instant Activation</h4>
-            <p>Credits and API access are provisioned automatically within seconds of purchase.</p>
-          </div>
-        </div>
-        <div className="p-trust-col">
-          <span className="p-trust-icon">🛡️</span>
-          <div>
-            <h4>Stripe Encrypted Billing</h4>
-            <p>Bank-grade 256-bit SSL encryption. We never store your raw payment details.</p>
-          </div>
         </div>
       </div>
     </div>

@@ -34,11 +34,13 @@ export const analyzeContent = async (content, type) => {
 
     const response = await fetch(endpoint, options);
     
+    const payload = await response.json().catch(() => ({}));
     if (!response.ok) {
-      throw new Error(`API error: ${response.status} ${response.statusText}`);
+      const detail = typeof payload.detail === 'string' ? payload.detail : `API error: ${response.status} ${response.statusText}`;
+      throw new Error(detail);
     }
-    
-    return await response.json();
+
+    return payload;
   } catch (error) {
     console.error('Analysis failed:', error);
     throw error;

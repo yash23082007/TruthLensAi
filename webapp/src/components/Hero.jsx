@@ -3,77 +3,37 @@ import './Hero.css';
 
 const Hero = ({ onNavigate }) => {
   return (
-    <section className="hero container">
-      <div className="hero-content animate-slide-up">
-        {/* Badge */}
-        <div className="section-stamp">
-          Multimodal Content Verification Platform
-        </div>
-
-        {/* Title */}
-        <h1 className="hero-title">
-          AI DEEPFAKE DETECTION ONLINE <span className="text-gradient">FREE</span>
+    <section className="hero-section container">
+      <div className="hero-inner animate-fade-in">
+        <h1 className="hero-heading">
+          Verify any media.<br />
+          Detect deepfakes instantly.
         </h1>
 
-        {/* Subtitle */}
-        <p className="hero-subtitle">
-          Instantly verify images, videos, synthetic voice clones, and phishing text in under 5 seconds. Get granular trust scores, ELA heatmaps, and tamper-evident forensic certificates.
+        <p className="hero-description">
+          Upload an image, video, audio clip, or text to check for AI generation, manipulation, and misinformation.
         </p>
 
-        {/* Social Proof Counter & Stars */}
-        <div className="hero-social-proof">
-          <div className="avatar-stack">
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=60&auto=format&fit=crop&q=80" alt="Auditor 1" className="user-avatar" />
-            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&auto=format&fit=crop&q=80" alt="Auditor 2" className="user-avatar" />
-            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60&auto=format&fit=crop&q=80" alt="Auditor 3" className="user-avatar" />
-            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=60&auto=format&fit=crop&q=80" alt="Auditor 4" className="user-avatar" />
-          </div>
-          <div className="proof-details">
-            <div className="stars-row">
-              <span className="star">★</span>
-              <span className="star">★</span>
-              <span className="star">★</span>
-              <span className="star">★</span>
-              <span className="star">★</span>
-              <span className="rating-num">5.0</span>
-            </div>
-            <span className="proof-text">50,000+ deepfakes & synthetic files detected successfully</span>
-          </div>
-        </div>
-
-        {/* Hero Actions */}
-        <div className="hero-actions">
+        <div className="hero-cta-group">
           <button 
-            className="btn btn-glow hero-btn" 
+            className="btn btn-primary btn-large"
             onClick={() => document.getElementById('upload-zone')?.scrollIntoView({ behavior: 'smooth' })}
           >
-            ⚡ TRY FREE DETECTION NOW
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" x2="12" y1="3" y2="15"/>
+            </svg>
+            Start verification
           </button>
-
           {onNavigate && (
-            <>
-              <button 
-                className="btn btn-secondary hero-btn"
-                onClick={() => onNavigate('forensic-lab')}
-              >
-                🔬 OPEN FORENSIC LAB
-              </button>
-              <button 
-                className="btn btn-secondary hero-btn"
-                onClick={() => onNavigate('live-voice')}
-              >
-                🎙️ LIVE MIC SCREENER
-              </button>
-            </>
+            <button 
+              className="btn btn-secondary btn-large"
+              onClick={() => onNavigate('forensic-lab')}
+            >
+              Open sandbox
+            </button>
           )}
-        </div>
-
-        {/* Feature Pills */}
-        <div className="hero-pills-row">
-          <span className="h-pill">✓ No Sign-up Required</span>
-          <span className="h-pill">✓ Sub-5s Instant Response</span>
-          <span className="h-pill">✓ Zero Data Retention (Privacy First)</span>
-          <span className="h-pill">✓ Multi-Signal Deep Ensemble</span>
         </div>
       </div>
     </section>

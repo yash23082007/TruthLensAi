@@ -1,46 +1,44 @@
 import React from 'react';
 import './HowToUse.css';
 
-const HowToUse = () => {
-  const steps = [
-    {
-      step: "01",
-      title: "UPLOAD CONTENT",
-      desc: "Drag and drop or select your media files (images, video, audio) or type in text claims to inspect."
-    },
-    {
-      step: "02",
-      title: "AI PROCESSING",
-      desc: "The system runs parallel forensic neural networks and metadata evaluations in under 5 seconds."
-    },
-    {
-      step: "03",
-      title: "REVIEW FINDINGS",
-      desc: "Get an authenticity score (0-100%) and a fully explained breakdown of detected anomalies."
-    },
-    {
-      step: "04",
-      title: "SHARE REPORT",
-      desc: "Download the forensic verification log or copy a secure validation link for your records."
-    }
-  ];
+const STEPS = [
+  {
+    step: "1",
+    title: "Upload your file",
+    desc: "Drag and drop an image, video, audio clip, or paste text."
+  },
+  {
+    step: "2",
+    title: "Automated analysis",
+    desc: "Multiple detection methods run simultaneously on your file."
+  },
+  {
+    step: "3",
+    title: "Review results",
+    desc: "See a trust score, risk classification, and detailed breakdown."
+  },
+  {
+    step: "4",
+    title: "Export report",
+    desc: "Download a verification certificate or copy the JSON audit trail."
+  }
+];
 
+const HowToUse = () => {
   return (
     <section className="how-to-use-section container">
-      <div className="features-header left-aligned-section">
-        <div className="section-stamp">Instructional flow</div>
-        <h2>HOW TO USE TRUTHLENS AI</h2>
-        <p>
-          Content verification is direct and simple. Follow this process to scan, analyze, and document authenticity status.
-        </p>
+      <div className="section-header-block">
+        <h2 className="section-main-title">How it works</h2>
       </div>
 
-      <div className="steps-grid">
-        {steps.map((item, idx) => (
-          <div key={idx} className="glass-card step-card">
+      <div className="how-steps-row">
+        {STEPS.map((item, idx) => (
+          <div key={idx} className="step-item">
             <div className="step-number">{item.step}</div>
-            <h3>{item.title}</h3>
-            <p>{item.desc}</p>
+            <div className="step-content">
+              <h3 className="step-title">{item.title}</h3>
+              <p className="step-desc">{item.desc}</p>
+            </div>
           </div>
         ))}
       </div>

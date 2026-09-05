@@ -10,7 +10,21 @@ from main import app
 
 client = TestClient(app)
 
-def test_file(file_path):
+
+def test_health_endpoint():
+    response = client.get("/api/health")
+    assert response.status_code == 200
+    assert response.json()["status"] == "healthy"
+
+
+def test_malformed_image_is_rejected():
+    response = client.post(
+        "/api/analyze/image",
+        files={"file": ("invalid.png", b"not-an-image", "image/png")},
+    )
+    assert response.status_code == 415
+
+def analyze_file(file_path):
     if not os.path.exists(file_path):
         return {"error": "File not found"}
     
@@ -61,15 +75,16 @@ def run_tests():
     results = []
     for file_path in files_to_test:
         print(f"Testing {file_path}...")
-        res = test_file(file_path)
+        res = analyze_file(file_path)
         results.append({
             "file": file_path,
             "result": res
         })
     
-    with open("test_results.json", "w") as f:
+    output_path = os.path.join(os.path.dirname(__file__), "test_results.json")
+    with open(output_path, "w") as f:
         json.dump(results, f, indent=2)
-    print("Results saved to test_results.json")
+    print(f"Results saved to {output_path}")
 
 if __name__ == "__main__":
     run_tests()

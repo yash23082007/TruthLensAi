@@ -4,19 +4,24 @@ import './AnalysisResult.css';
 const RiskBadge = ({ riskLevel }) => {
   const getRiskStyles = (level) => {
     switch (level?.toLowerCase()) {
-      case 'low': return { icon: '🟢', class: 'risk-low', label: 'Low Risk' };
-      case 'medium': return { icon: '🟡', class: 'risk-medium', label: 'Medium Risk' };
-      case 'high': return { icon: '🔴', class: 'risk-high', label: 'High Risk' };
-      case 'critical': return { icon: '⚠️', class: 'risk-critical', label: 'Critical Risk' };
-      default: return { icon: '⚪', class: 'risk-unknown', label: 'Unknown' };
+      case 'low': 
+        return { class: 'risk-low', label: 'Low Risk — Authentic' };
+      case 'medium': 
+        return { class: 'risk-medium', label: 'Medium Risk — Anomalies' };
+      case 'high': 
+        return { class: 'risk-high', label: 'High Risk — Synthetic' };
+      case 'critical': 
+        return { class: 'risk-critical', label: 'Critical — Deepfake' };
+      default: 
+        return { class: 'risk-unknown', label: 'Unknown' };
     }
   };
 
   const style = getRiskStyles(riskLevel);
 
   return (
-    <div className={`risk-badge ${style.class}`}>
-      <span className="risk-icon">{style.icon}</span>
+    <div className={`verdict-pill ${style.class}`}>
+      <span className="status-dot pulse"></span>
       <span className="risk-label">{style.label}</span>
     </div>
   );

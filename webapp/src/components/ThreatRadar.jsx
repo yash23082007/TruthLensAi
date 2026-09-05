@@ -64,7 +64,6 @@ const ThreatRadar = ({ onBack }) => {
   const [tickerCount, setTickerCount] = useState(142850);
 
   useEffect(() => {
-    // Fetch live backend telemetry
     fetch('http://localhost:8000/api/threats/radar')
       .then(res => res.json())
       .then(json => {
@@ -88,15 +87,15 @@ const ThreatRadar = ({ onBack }) => {
     <div className="threat-radar container animate-fade-in">
       <div className="radar-header">
         <div>
-          <div className="section-stamp">Live Threat Intelligence</div>
-          <h1 className="radar-title">GLOBAL DEEPFAKE THREAT RADAR</h1>
+          <div className="section-tag">Global Threat Intelligence</div>
+          <h1 className="radar-title">Synthetic Media Threat Radar</h1>
           <p className="radar-subtitle">
             Real-time global telemetry monitoring active synthetic identity attacks, voice cloning fraud campaigns, and generative disinformation vectors.
           </p>
         </div>
         {onBack && (
-          <button className="btn btn-secondary" onClick={onBack}>
-            ← BACK TO SCANNER
+          <button className="btn btn-secondary btn-small" onClick={onBack}>
+            ← Back to Overview
           </button>
         )}
       </div>
@@ -104,9 +103,9 @@ const ThreatRadar = ({ onBack }) => {
       {/* Hero Telemetry Banner */}
       <div className="radar-hero-grid">
         <div className="defcon-card glass-card">
-          <div className="defcon-tag">GLOBAL ALERT STATUS</div>
+          <div className="defcon-tag">DEFCON STATUS</div>
           <div className="defcon-status">
-            <span className="radar-blip"></span>
+            <span className="status-dot danger pulse"></span>
             <h2>{data.global_threat_level}</h2>
           </div>
           <div className="threat-meter">
@@ -114,129 +113,136 @@ const ThreatRadar = ({ onBack }) => {
           </div>
           <div className="defcon-footer">
             <span>SYNTHETIC ATTACK INDEX: <strong>{data.global_threat_score}/100</strong></span>
-            <span>UPDATED: <strong>LIVE</strong></span>
+            <span>TELEMETRY: <strong>ACTIVE</strong></span>
           </div>
         </div>
 
-        <div className="stats-ticker-card glass-card">
-          <div className="stat-row">
-            <div>
-              <span className="stat-label">24H SCANNED ASSETS</span>
-              <strong className="stat-number">{tickerCount.toLocaleString()}</strong>
-            </div>
-            <div className="stat-badge live">LIVE FEED</div>
+        <div className="stats-metric-card glass-card">
+          <div className="metric-box">
+            <span className="metric-num">{tickerCount.toLocaleString()}</span>
+            <span className="metric-lbl">Scanned Last 24h</span>
           </div>
-          <div className="stat-row">
-            <div>
-              <span className="stat-label">FLAGGED DEEPFAKES</span>
-              <strong className="stat-number danger">{data.flagged_deepfakes_24h.toLocaleString()}</strong>
-            </div>
-            <div>
-              <span className="stat-label">ACCURACY RATE</span>
-              <strong className="stat-number success">{data.detection_rate_pct}%</strong>
-            </div>
+          <div className="metric-box">
+            <span className="metric-num text-danger">{data.flagged_deepfakes_24h.toLocaleString()}</span>
+            <span className="metric-lbl">Flagged Deepfakes</span>
+          </div>
+          <div className="metric-box">
+            <span className="metric-num text-success">{data.detection_rate_pct}%</span>
+            <span className="metric-lbl">Detection Accuracy</span>
           </div>
         </div>
       </div>
 
-      {/* Threat Distribution Bars */}
-      <div className="distribution-pane glass-card">
-        <h3>ACTIVE SYNTHETIC MEDIA VECTORS</h3>
-        <div className="vector-bars-grid">
-          <div className="vector-box">
-            <div className="vector-head">
-              <span>🎙️ Voice Cloning Scams</span>
+      {/* Vector Distribution Bar */}
+      <div className="vector-dist-card glass-card">
+        <div className="dist-header">
+          <h3>24h Threat Vector Distribution</h3>
+          <span className="telemetry-meta-tag">GLOBAL SENSOR ARRAY</span>
+        </div>
+        <div className="dist-bars-container">
+          <div className="dist-item">
+            <div className="dist-info">
+              <span>Voice Cloning & Audio Scams</span>
               <strong>{data.threat_distribution.voice_cloning_scams}%</strong>
             </div>
-            <div className="vector-track">
-              <div className="vector-fill" style={{ width: `${data.threat_distribution.voice_cloning_scams}%` }}></div>
+            <div className="dist-bar-track">
+              <div className="dist-bar-fill voice" style={{ width: `${data.threat_distribution.voice_cloning_scams}%` }}></div>
             </div>
           </div>
 
-          <div className="vector-box">
-            <div className="vector-head">
-              <span>🎥 Face Swap Video</span>
+          <div className="dist-item">
+            <div className="dist-info">
+              <span>Video Face Swaps & Lip-Sync</span>
               <strong>{data.threat_distribution.face_swap_video}%</strong>
             </div>
-            <div className="vector-track">
-              <div className="vector-fill" style={{ width: `${data.threat_distribution.face_swap_video}%` }}></div>
+            <div className="dist-bar-track">
+              <div className="dist-bar-fill video" style={{ width: `${data.threat_distribution.face_swap_video}%` }}></div>
             </div>
           </div>
 
-          <div className="vector-box">
-            <div className="vector-head">
-              <span>🖼️ AI Image Manipulation</span>
+          <div className="dist-item">
+            <div className="dist-info">
+              <span>AI Image & Identity Documents</span>
               <strong>{data.threat_distribution.ai_image_manipulation}%</strong>
             </div>
-            <div className="vector-track">
-              <div className="vector-fill" style={{ width: `${data.threat_distribution.ai_image_manipulation}%` }}></div>
+            <div className="dist-bar-track">
+              <div className="dist-bar-fill image" style={{ width: `${data.threat_distribution.ai_image_manipulation}%` }}></div>
             </div>
           </div>
 
-          <div className="vector-box">
-            <div className="vector-head">
-              <span>📝 Phishing Text Generation</span>
+          <div className="dist-item">
+            <div className="dist-info">
+              <span>Phishing & Generated NLP Text</span>
               <strong>{data.threat_distribution.phishing_text_generation}%</strong>
             </div>
-            <div className="vector-track">
-              <div className="vector-fill" style={{ width: `${data.threat_distribution.phishing_text_generation}%` }}></div>
+            <div className="dist-bar-track">
+              <div className="dist-bar-fill text" style={{ width: `${data.threat_distribution.phishing_text_generation}%` }}></div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Live Threat Campaigns Stream */}
+      {/* Active Campaigns Table / Feed */}
       <div className="campaigns-section">
-        <div className="campaigns-header">
-          <h3>ACTIVE THREAT CAMPAIGNS & MITIGATION INTEL</h3>
-          <div className="filter-pills">
-            {['ALL', 'Audio', 'Video', 'Image', 'Text'].map((cat) => (
+        <div className="campaigns-header-row">
+          <div>
+            <h2 className="campaigns-title">Active Synthetic Media Campaigns</h2>
+            <p className="campaigns-subtitle">Targeted vectors monitored by TruthLens early warning telemetry</p>
+          </div>
+          <div className="filter-chips">
+            {['ALL', 'Audio', 'Video', 'Image', 'Text'].map((medium) => (
               <button
-                key={cat}
-                className={`filter-btn ${filterMedium === cat ? 'active' : ''}`}
-                onClick={() => setFilterMedium(cat)}
+                key={medium}
+                className={`filter-btn ${filterMedium === medium ? 'active' : ''}`}
+                onClick={() => setFilterMedium(medium)}
               >
-                {cat}
+                {medium}
               </button>
             ))}
           </div>
         </div>
 
-        <div className="campaign-cards-grid">
+        <div className="campaigns-grid">
           {filteredCampaigns.map((camp) => (
             <div key={camp.id} className="campaign-card glass-card">
-              <div className="campaign-top">
-                <span className={`severity-tag ${camp.severity.toLowerCase()}`}>
-                  {camp.severity} SEVERITY
+              <div className="camp-top">
+                <div className="camp-id-tag">
+                  <span className="status-dot danger pulse"></span>
+                  <code>{camp.id}</code>
+                </div>
+                <span className={`signal-severity-tag sev-${camp.severity.toLowerCase()}`}>
+                  {camp.severity}
                 </span>
-                <span className="camp-id">{camp.id}</span>
               </div>
 
-              <h4 className="camp-name">{camp.name}</h4>
+              <h3 className="camp-name">{camp.name}</h3>
 
-              <div className="camp-meta">
-                <div>
-                  <span className="meta-lbl">MEDIUM</span>
-                  <span className="meta-val">{camp.medium}</span>
+              <div className="camp-details-grid">
+                <div className="detail-item">
+                  <span className="d-label">VECTOR MEDIUM</span>
+                  <span className="d-val">{camp.medium}</span>
                 </div>
-                <div>
-                  <span className="meta-lbl">ACTIVE SINCE</span>
-                  <span className="meta-val">{camp.active_since}</span>
+                <div className="detail-item">
+                  <span className="d-label">ACTIVE SINCE</span>
+                  <span className="d-val">{camp.active_since}</span>
+                </div>
+                <div className="detail-item full-width">
+                  <span className="d-label">GENERATIVE GENERATORS / TOOLING</span>
+                  <div className="vector-pills">
+                    {camp.vectors.map((v, i) => (
+                      <span key={i} className="vector-pill">{v}</span>
+                    ))}
+                  </div>
+                </div>
+                <div className="detail-item full-width">
+                  <span className="d-label">TARGET SECTORS</span>
+                  <span className="d-val">{camp.targets.join(', ')}</span>
                 </div>
               </div>
 
-              <div className="camp-vectors">
-                <span className="meta-lbl">KNOWN GENERATORS:</span>
-                <div className="vector-chips">
-                  {camp.vectors.map((vec, idx) => (
-                    <span key={idx} className="v-chip">{vec}</span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="camp-mitigation">
-                <strong>🛡️ Recommended Defense:</strong>
-                <p>{camp.mitigation}</p>
+              <div className="mitigation-box">
+                <span className="mit-label">RECOMMENDED MITIGATION:</span>
+                <p className="mit-text">{camp.mitigation}</p>
               </div>
             </div>
           ))}

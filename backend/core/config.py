@@ -12,17 +12,16 @@ class Settings:
     PORT: int = int(os.environ.get("PORT", 8000))
     
     # CORS origins
-    CORS_ORIGINS: list = [
-        "http://localhost:5173",   # Vite dev server
-        "http://localhost:3000",
-        "*"
-    ]
+    CORS_ORIGINS: list = [origin.strip() for origin in os.environ.get(
+        "CORS_ORIGINS",
+        "http://localhost:5173,http://localhost:5174,http://localhost:3000"
+    ).split(",") if origin.strip()]
     
     # File upload limits
     MAX_UPLOAD_SIZE_MB: int = 100
     ALLOWED_IMAGE_TYPES: list = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/bmp"]
-    ALLOWED_VIDEO_TYPES: list = ["video/mp4", "video/avi", "video/mov", "video/quicktime", "video/webm", "video/mkv"]
-    ALLOWED_AUDIO_TYPES: list = ["audio/mpeg", "audio/wav", "audio/x-wav", "audio/ogg", "audio/flac", "audio/mp3", "audio/mp4", "audio/aac"]
+    ALLOWED_VIDEO_TYPES: list = ["video/mp4", "video/avi", "video/mov", "video/x-msvideo", "video/quicktime", "video/webm", "video/mkv"]
+    ALLOWED_AUDIO_TYPES: list = ["audio/mpeg", "audio/wav", "audio/x-wav", "audio/ogg", "audio/flac", "audio/mp3", "audio/mp4", "audio/x-m4a", "audio/aac"]
     
     # Analysis
     VIDEO_FRAME_SAMPLE_RATE: int = 5  # Analyze every Nth frame

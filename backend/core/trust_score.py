@@ -204,24 +204,22 @@ class TrustScoreEngine:
         extra_context = extra_context or {}
         authenticity_score = round(100 - trust_score, 1)
 
-        # Summary line
-        if risk_level == RiskLevel.CRITICAL:
-            summary = f"CRITICAL: This {content_type} shows strong signs of manipulation or deception. Authenticity: {authenticity_score}%"
-        elif risk_level == RiskLevel.HIGH:
-            summary = f"HIGH RISK: This {content_type} contains elements that appear manipulated or AI-generated. Authenticity: {authenticity_score}%"
-        elif risk_level == RiskLevel.MEDIUM:
-            summary = f"MODERATE: This {content_type} has some suspicious indicators worth reviewing. Authenticity: {authenticity_score}%"
+        # Clean, human summary line
+        if not details or (trust_score < 30 and risk_level == RiskLevel.LOW):
+            summary = f"No signs of AI generation or manipulation detected. Authenticity confidence: {authenticity_score}%"
+        elif trust_score >= 70 or risk_level == RiskLevel.CRITICAL:
+            summary = f"High probability of AI deepfake generation or manipulation detected ({trust_score}% AI score)."
+        elif trust_score >= 45 or risk_level == RiskLevel.HIGH:
+            summary = f"Significant AI generation indicators detected in this {content_type} ({trust_score}% AI score)."
         else:
-            summary = f"LOW RISK: This {content_type} appears largely authentic. Authenticity: {authenticity_score}%"
+            summary = f"Moderate anomalies detected. Some regions show possible filtering or editing ({trust_score}% anomaly index)."
 
-        # Build detailed explanation
         explanation_parts = []
-        explanation_parts.append(
-            f"My analysis indicates that your {content_type} "
-            f"{'contains manipulated elements' if trust_score >= 50 else 'appears largely authentic'}."
-        )
-        explanation_parts.append("")
-        explanation_parts.append(f"Here's what my analysis of your {content_type} revealed:")
+        if trust_score >= 50:
+            explanation_parts.append(f"The forensic analysis flagged significant synthetic manipulation markers in this {content_type}.")
+        else:
+            explanation_parts.append(f"The forensic analysis verified that this {content_type} is consistent with authentic media.")
+
         explanation_parts.append("")
 
         # Add video-specific context
@@ -230,18 +228,8 @@ class TrustScoreEngine:
             deepfake_frames = extra_context.get("deepfake_frames", 0)
             if total_frames > 0:
                 explanation_parts.append(
-                    f"Video Analysis: {deepfake_frames} of {total_frames} sampled frames showed deepfake indicators."
+                    f"Frame Analysis: {deepfake_frames} of {total_frames} sampled frames showed facial manipulation artifacts."
                 )
-                if deepfake_frames > 0 and total_frames > 0:
-                    ratio = deepfake_frames / total_frames
-                    if ratio > 0.8:
-                        explanation_parts.append(
-                            "This strongly suggests the video has been generated or heavily manipulated using AI techniques."
-                        )
-                    elif ratio > 0.4:
-                        explanation_parts.append(
-                            "A significant portion of frames show AI-generation markers, suggesting partial manipulation."
-                        )
                 explanation_parts.append("")
 
         # Sort details by severity (critical first)
@@ -250,18 +238,7 @@ class TrustScoreEngine:
 
         # Add each finding
         for detail in sorted_details:
-            severity_icon = {
-                RiskLevel.LOW: "[LOW]",
-                RiskLevel.MEDIUM: "[MEDIUM]",
-                RiskLevel.HIGH: "[HIGH]",
-                RiskLevel.CRITICAL: "[CRITICAL]",
-            }.get(detail.severity, "[INFO]")
-            explanation_parts.append(
-                f"{severity_icon} [{detail.category}] {detail.finding} (confidence: {detail.confidence:.0%})"
-            )
-
-        explanation_parts.append("")
-        explanation_parts.append(f"Authenticity Score: {authenticity_score}%")
+            explanation_parts.append(f"• [{detail.category}] {detail.finding} (Confidence: {detail.confidence:.0%})")
 
         return summary, "\n".join(explanation_parts)
 

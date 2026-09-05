@@ -5,10 +5,10 @@ const TrustScoreGauge = ({ score }) => {
   const [animatedScore, setAnimatedScore] = useState(0);
 
   useEffect(() => {
-    const duration = 1200; // ms
-    const steps = 60;
+    const duration = 900;
+    const steps = 45;
     const stepTime = duration / steps;
-    const increment = score / steps;
+    const increment = (score || 0) / steps;
     let currentScore = 0;
 
     const timer = setInterval(() => {
@@ -24,43 +24,34 @@ const TrustScoreGauge = ({ score }) => {
     return () => clearInterval(timer);
   }, [score]);
 
-  // Convert "Manipulation Score" (trust_score) to "Authenticity Score" for UX
-  const authenticityScore = Math.round(Math.max(0, 100 - animatedScore));
+  const authenticityScore = Math.round(Math.max(0, 100 - (animatedScore || 0)));
+  const isHealthy = authenticityScore >= 60;
   
-  let colorClass = 'gauge-success';
-  if (authenticityScore < 40) colorClass = 'gauge-danger';
-  else if (authenticityScore < 70) colorClass = 'gauge-warning';
-
-  const radius = 64;
+  const radius = 56;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (authenticityScore / 100) * circumference;
 
   return (
-    <div className="gauge-container">
-      <svg className="gauge-svg" width="160" height="160" viewBox="0 0 160 160">
+    <div className="score-ring-wrapper">
+      <svg className="score-ring" width="140" height="140" viewBox="0 0 140 140">
         <circle 
-          className="gauge-bg" 
-          cx="80" cy="80" r={radius} 
-          strokeWidth="10" 
-          fill="none" 
+          className="ring-bg" 
+          cx="70" cy="70" r={radius} 
+          strokeWidth="9" 
         />
         <circle 
-          className={`gauge-progress ${colorClass}`} 
-          cx="80" cy="80" r={radius} 
-          strokeWidth="10" 
-          fill="none" 
-          strokeLinecap="round"
+          className={`ring-fill ${isHealthy ? 'stroke-success' : 'stroke-danger'}`} 
+          cx="70" cy="70" r={radius} 
+          strokeWidth="9" 
           style={{ 
             strokeDasharray: circumference, 
             strokeDashoffset: strokeDashoffset,
-            transition: 'stroke-dashoffset 0.1s linear'
           }}
-          transform="rotate(-90 80 80)"
         />
       </svg>
-      <div className="gauge-text">
-        <span className="gauge-value">{authenticityScore}%</span>
-        <span className="gauge-label">Authentic</span>
+      <div className="score-center-text">
+        <span className="score-number">{authenticityScore}%</span>
+        <span className="score-label">Authenticity</span>
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ from fastapi import APIRouter, UploadFile, File
 from models.schemas import AnalysisResult, ContentType
 from analyzers.video_analyzer import video_analyzer
 from core.trust_score import trust_engine
-from datetime import datetime
+from datetime import datetime, timezone
 from core.config import settings
 from core.upload_validation import validate_media
 
@@ -19,7 +19,7 @@ async def analyze_video(file: UploadFile = File(...)):
     start_time = time.time()
 
     # Read file bytes
-    video_bytes = await file.read()
+    video_bytes = await file.read(50 * 1024 * 1024 + 1)
     validate_media(file, video_bytes, settings.ALLOWED_VIDEO_TYPES, 50)
 
     # Run video analysis
@@ -44,7 +44,7 @@ async def analyze_video(file: UploadFile = File(...)):
     return AnalysisResult(
         id=str(uuid.uuid4()),
         content_type=ContentType.VIDEO,
-        timestamp=datetime.utcnow().isoformat(),
+        timestamp=datetime.now(timezone.utc).isoformat(),
         trust_score=trust_score,
         risk_level=risk_level,
         is_authentic=is_authentic,

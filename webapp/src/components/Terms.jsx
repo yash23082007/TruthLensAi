@@ -3,26 +3,24 @@ import './Legal.css';
 
 const Terms = () => {
   return (
-    <div className="legal-section animate-fade-in">
-      <h2>TERMS OF SERVICE</h2>
-      <p>Last updated: October 2023</p>
-      
-      <h3>1. Acceptance of Terms</h3>
-      <p>By accessing or using TruthLens AI, you agree to be bound by these Terms of Service. If you disagree with any part of the terms, you may not access our services.</p>
+    <div className="legal-section container animate-fade-in">
+      <div className="legal-card glass-card">
+        <div className="section-tag">Terms of Service</div>
+        <h2>Platform Terms of Use</h2>
+        <span className="legal-date">Last updated: August 2026</span>
+        
+        <h3>1. Permitted Use</h3>
+        <p>TruthLens provides automated content verification, deepfake detection, and cryptographic provenance analysis. Users may utilize the service for investigative journalism, brand protection, educational research, personal verification, and developer API integration.</p>
 
-      <h3>2. Use License</h3>
-      <p>Permission is granted to temporarily use TruthLens AI for personal or commercial content verification. You may not:</p>
-      <ul>
-        <li>Use the service for any illegal or unauthorized purpose</li>
-        <li>Attempt to decompile or reverse engineer any software contained on the platform</li>
-        <li>Transfer the materials to another person or "mirror" the materials on any other server</li>
-      </ul>
+        <h3>2. Forensic Verdict Disclaimers</h3>
+        <p>While our multi-vector ensemble combines state-of-the-art heuristic and neural analysis (achieving high benchmark precision), no digital forensic pipeline is 100% infallible against emerging synthetic zero-day generators. Forensic scores should be used as calibrated probabilistic indicators rather than definitive legal conclusions.</p>
 
-      <h3>3. Disclaimer</h3>
-      <p>The materials on TruthLens AI are provided on an 'as is' basis. While our AI models are highly accurate, they are not infallible. TruthLens AI makes no warranties, expressed or implied, regarding the absolute accuracy of the verification results.</p>
+        <h3>3. Acceptable API Usage</h3>
+        <p>API users must abide by standard rate limits. Automated scraping or denial-of-service attempts against our inference clusters will result in immediate token revocation.</p>
 
-      <h3>4. Limitations</h3>
-      <p>In no event shall TruthLens AI or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit) arising out of the use or inability to use the materials on the platform.</p>
+        <h3>4. Contact & Legal Inquiries</h3>
+        <p>For questions regarding terms, licensing, or commercial enterprise agreements, reach out to <a href="mailto:ktanayash@gmail.com" style={{color: 'var(--accent-cyan)'}}>ktanayash@gmail.com</a>.</p>
+      </div>
     </div>
   );
 };

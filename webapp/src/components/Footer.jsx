@@ -6,38 +6,41 @@ const Footer = ({ onChangePage, onSelectTool }) => {
     <footer className="footer-bar">
       <div className="container footer-container">
         <div className="footer-brand">
-          <div className="footer-logo">
-            <span>TRUTHLENS <span className="logo-accent">AI</span></span>
-          </div>
-          <span className="footer-tagline">Multimodal Content Verification</span>
+          <span className="footer-logo-text">TruthLens</span>
+          <p className="footer-tagline">
+            Media verification and deepfake detection.
+          </p>
         </div>
         
         <div className="footer-links-grid">
           <div className="footer-col">
-            <h4>Detection Tools</h4>
-            <a href="#" onClick={(e) => { e.preventDefault(); onSelectTool('image'); }}>📷 Image Detection</a>
-            <a href="#" onClick={(e) => { e.preventDefault(); onSelectTool('video'); }}>🎥 Video Detection</a>
-            <a href="#" onClick={(e) => { e.preventDefault(); onSelectTool('audio'); }}>🎙️ Audio Detection</a>
-            <a href="#" onClick={(e) => { e.preventDefault(); onSelectTool('text'); }}>📝 Text Verification</a>
+            <h4>Detection</h4>
+            <a href="#" onClick={(e) => { e.preventDefault(); onSelectTool('image'); }}>Images</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); onSelectTool('video'); }}>Video</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); onSelectTool('audio'); }}>Voice & audio</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); onSelectTool('text'); }}>Text & claims</a>
           </div>
 
           <div className="footer-col">
-            <h4>Company</h4>
-            <a href="#" onClick={(e) => { e.preventDefault(); onChangePage('about'); }}>About Us</a>
-            <a href="#" onClick={(e) => { e.preventDefault(); onChangePage('privacy'); }}>Privacy Policy</a>
-            <a href="#" onClick={(e) => { e.preventDefault(); onChangePage('terms'); }}>Terms of Use</a>
+            <h4>Tools</h4>
+            <a href="#" onClick={(e) => { e.preventDefault(); onChangePage('forensic-lab'); }}>Forensic sandbox</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); onChangePage('threat-radar'); }}>Threat radar</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); onChangePage('c2pa'); }}>C2PA provenance</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); onChangePage('challenge'); }}>Deepfake challenge</a>
           </div>
 
           <div className="footer-col">
-            <h4>Developers</h4>
-            <a href="http://localhost:8000/docs" target="_blank" rel="noopener noreferrer">API Documentation</a>
-            <a href="https://www.linkedin.com/in/yash-vijay-b0a75937a?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a href="mailto:ktanayash@gmail.com">Contact Support</a>
+            <h4>Platform</h4>
+            <a href="#" onClick={(e) => { e.preventDefault(); onChangePage('about'); }}>About</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); onChangePage('api-docs'); }}>API</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); onChangePage('pricing'); }}>Pricing</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); onChangePage('privacy'); }}>Privacy</a>
           </div>
         </div>
       </div>
+      
       <div className="footer-bottom container">
-        <p>© 2026 TruthLens AI. All rights reserved. Free content authenticity tool.</p>
+        <p>© 2026 TruthLens. All files processed in-memory with zero data retention.</p>
       </div>
     </footer>
   );

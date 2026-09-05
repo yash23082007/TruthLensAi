@@ -4,58 +4,54 @@ import './ApiPlayground.css';
 const CODE_SNIPPETS = {
   python: `import requests
 
-url = "http://localhost:8000/api/analyze/image"
-files = {"file": open("suspect_image.jpg", "rb")}
+url = "http://localhost:8000/api/analyze/text"
+payload = {
+    "text": "Urgent: Your bank account is locked. Verify your credentials immediately.",
+    "check_ai_generated": True,
+    "check_scam": True,
+    "check_claims": True
+}
 
-response = requests.post(url, files=files)
+response = requests.post(url, json=payload)
 result = response.json()
 
 print(f"Trust Score: {result['trust_score']}%")
-print(f"Risk Level: {result['risk_level']}")
-print(f"Verdict: {'Authentic' if result['is_authentic'] else 'Deepfake Detected'}")
-print(f"Reasoning: {result['summary']}")`,
+print(f"Risk Tier: {result['risk_level']}")
+print(f"Is Authentic: {result['is_authentic']}")
+print(f"Summary: {result['summary']}")`,
 
-  curl: `curl -X POST "http://localhost:8000/api/analyze/image" \\
-  -H "Accept: application/json" \\
-  -F "file=@suspect_image.jpg"`,
+  curl: `curl -X POST "http://localhost:8000/api/analyze/text" \\
+  -H "Content-Type: application/json" \\
+  -d '{"text": "Urgent: Verify your account immediately to prevent closure."}'`,
 
-  javascript: `const formData = new FormData();
-formData.append('file', fileInputElement.files[0]);
-
-const response = await fetch('http://localhost:8000/api/analyze/image', {
+  javascript: `const response = await fetch('http://localhost:8000/api/analyze/text', {
   method: 'POST',
-  body: formData
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    text: 'Urgent: Click here to verify credentials.'
+  })
 });
 
 const result = await response.json();
-console.log('Deepfake Detection Report:', result);`,
+console.log('Forensic Verdict:', result.trust_score, result.risk_level);`,
 
   go: `package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
-	"io"
-	"mime/multipart"
 	"net/http"
-	"os"
 )
 
 func main() {
-	file, _ := os.Open("suspect_image.jpg")
-	defer file.Close()
+	payload := map[string]string{"text": "Urgent verification required."}
+	body, _ := json.Marshal(payload)
 
-	body := &bytes.Buffer{}
-	writer := multipart.NewWriter(body)
-	part, _ := writer.CreateFormFile("file", "suspect_image.jpg")
-	io.Copy(part, file)
-	writer.Close()
-
-	req, _ := http.NewRequest("POST", "http://localhost:8000/api/analyze/image", body)
-	req.Header.Set("Content-Type", writer.FormDataContentType())
-
-	client := &http.Client{}
-	resp, _ := client.Do(req)
+	resp, err := http.Post("http://localhost:8000/api/analyze/text", "application/json", bytes.NewBuffer(body))
+	if err != nil {
+		panic(err)
+	}
 	defer resp.Body.Close()
 
 	fmt.Println("Status:", resp.Status)
@@ -69,6 +65,7 @@ const ApiPlayground = ({ onBack }) => {
   const [apiResponse, setApiResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [latency, setLatency] = useState(null);
+  const [copied, setCopied] = useState(false);
 
   const handleTestCall = async () => {
     setIsLoading(true);
@@ -85,7 +82,7 @@ const ApiPlayground = ({ onBack }) => {
           body: JSON.stringify(parsed)
         });
       } else {
-        res = await fetch(`http://localhost:8000/api/threats/radar`);
+        res = await fetch(`http://localhost:8000${endpoint}`);
       }
 
       const json = await res.json();
@@ -93,41 +90,47 @@ const ApiPlayground = ({ onBack }) => {
       setLatency(elapsed);
       setApiResponse(json);
     } catch (err) {
-      setLatency(45);
+      setLatency(28);
       setApiResponse({
         id: "demo-api-res-01",
         trust_score: 89.2,
         risk_level: "critical",
         is_authentic: false,
-        summary: "⚠️ CRITICAL: Social engineering phishing and urgency triggers identified.",
-        processing_time_ms: 45
+        summary: "Synthetic phishing and urgent credential request indicators detected.",
+        processing_time_ms: 28.5
       });
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleCopyCode = () => {
+    navigator.clipboard.writeText(CODE_SNIPPETS[activeLang]);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div className="api-playground container animate-fade-in">
       <div className="playground-header">
         <div>
-          <div className="section-stamp">Developer SDK & REST Sandbox</div>
-          <h1 className="playground-title">INTERACTIVE API PLAYGROUND</h1>
+          <div className="section-tag">Developer Platform</div>
+          <h1 className="playground-title">REST API & Developer Playground</h1>
           <p className="playground-subtitle">
-            Integrate enterprise-grade multimodal deepfake verification into your applications with our sub-100ms REST endpoints.
+            Integrate TruthLens multimodal deepfake detection directly into your ingestion pipelines, content moderation queues, and editorial workflows.
           </p>
         </div>
         {onBack && (
-          <button className="btn btn-secondary" onClick={onBack}>
-            ← BACK TO SCANNER
+          <button className="btn btn-secondary btn-small" onClick={onBack}>
+            ← Back to Overview
           </button>
         )}
       </div>
 
       <div className="playground-grid">
-        {/* Left: Code Snippets & Language Selector */}
-        <div className="code-pane glass-card">
-          <div className="code-pane-header">
+        {/* Code Generator Card */}
+        <div className="code-generator-card glass-card">
+          <div className="code-card-header">
             <div className="lang-tabs">
               {['python', 'curl', 'javascript', 'go'].map((lang) => (
                 <button
@@ -139,75 +142,76 @@ const ApiPlayground = ({ onBack }) => {
                 </button>
               ))}
             </div>
-            <button
-              className="copy-snippet-btn"
-              onClick={() => {
-                navigator.clipboard.writeText(CODE_SNIPPETS[activeLang]);
-                alert('Code snippet copied to clipboard!');
-              }}
-            >
-              📋 COPY
+            <button className="btn btn-secondary btn-small" onClick={handleCopyCode}>
+              {copied ? '✓ Copied' : 'Copy Code'}
             </button>
           </div>
 
-          <pre className="code-box">
-            <code>{CODE_SNIPPETS[activeLang]}</code>
-          </pre>
+          <div className="code-block-wrapper">
+            <pre className="code-pre">
+              <code>{CODE_SNIPPETS[activeLang]}</code>
+            </pre>
+          </div>
         </div>
 
-        {/* Right: Live Request Tester */}
-        <div className="tester-pane glass-card">
-          <h3>LIVE API REQUEST TESTER</h3>
-
-          <div className="tester-field">
-            <label>HTTP METHOD & ENDPOINT</label>
-            <div className="endpoint-row">
-              <span className="http-method">POST</span>
-              <select
-                className="endpoint-select"
-                value={endpoint}
-                onChange={(e) => setEndpoint(e.target.value)}
-              >
-                <option value="/api/analyze/text">/api/analyze/text</option>
-                <option value="/api/analyze/image">/api/analyze/image</option>
-                <option value="/api/analyze/video">/api/analyze/video</option>
-                <option value="/api/analyze/audio">/api/analyze/audio</option>
-                <option value="/api/threats/radar">/api/threats/radar (GET)</option>
-              </select>
+        {/* Live Terminal Executor */}
+        <div className="terminal-tester-card glass-card">
+          <div className="terminal-header">
+            <span className="terminal-title">LIVE API TEST BENCH</span>
+            <div className="terminal-traffic-lights">
+              <span className="dot red"></span>
+              <span className="dot yellow"></span>
+              <span className="dot green"></span>
             </div>
           </div>
 
-          {endpoint === '/api/analyze/text' && (
-            <div className="tester-field">
-              <label>JSON REQUEST BODY</label>
-              <textarea
-                className="payload-input"
-                value={testPayload}
-                onChange={(e) => setTestPayload(e.target.value)}
-                rows={3}
-              />
+          <div className="terminal-body">
+            <div className="endpoint-selector-row">
+              <span className="http-method">POST</span>
+              <select 
+                value={endpoint} 
+                onChange={(e) => setEndpoint(e.target.value)}
+                className="endpoint-select"
+              >
+                <option value="/api/analyze/text">/api/analyze/text</option>
+                <option value="/api/threats/radar">/api/threats/radar</option>
+                <option value="/api/health">/api/health</option>
+              </select>
+              <button 
+                className="btn btn-primary btn-small"
+                onClick={handleTestCall}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Executing...' : 'Execute Request'}
+              </button>
             </div>
-          )}
 
-          <button
-            className="btn btn-glow w-full"
-            onClick={handleTestCall}
-            disabled={isLoading}
-          >
-            {isLoading ? 'EXECUTING REQUEST...' : '⚡ SEND TEST REQUEST'}
-          </button>
+            {endpoint === '/api/analyze/text' && (
+              <div className="payload-box">
+                <label className="payload-lbl">REQUEST JSON PAYLOAD:</label>
+                <textarea
+                  className="payload-textarea"
+                  value={testPayload}
+                  onChange={(e) => setTestPayload(e.target.value)}
+                  rows={3}
+                />
+              </div>
+            )}
 
-          {apiResponse && (
-            <div className="response-box animate-slide-up">
-              <div className="response-header">
-                <span>HTTP 200 OK</span>
-                <span>{latency} MS</span>
+            <div className="response-output-box">
+              <div className="response-meta-row">
+                <span>RESPONSE (JSON)</span>
+                {latency !== null && (
+                  <span className="latency-badge">{latency} ms</span>
+                )}
               </div>
               <pre className="response-json">
-                {JSON.stringify(apiResponse, null, 2)}
+                {apiResponse 
+                  ? JSON.stringify(apiResponse, null, 2)
+                  : '// Click "Execute Request" to dispatch live API call'}
               </pre>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

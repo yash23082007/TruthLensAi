@@ -4,143 +4,167 @@ import './About.css';
 const About = () => {
   return (
     <div className="about-section container animate-fade-in">
-      <div className="about-header">
-        <div className="section-stamp">Technical Documentation</div>
-        <h2>SYSTEM ARCHITECTURE</h2>
-        <p className="lead-text">
-          TruthLens AI is a high-performance, multimodal content verification system. 
-          It orchestrates deep learning models, heuristic analyzers, and real-time retrieval-augmented generation (RAG) pipelines 
-          to identify synthetic media, manipulation signatures, and phishing attacks.
+      <div className="about-header centered">
+        <div className="section-tag">System Specifications</div>
+        <h1 className="section-main-title">Multi-Signal Forensic Architecture</h1>
+        <p className="section-main-desc">
+          TruthLens AI combines computer vision, acoustic forensics, natural language processing, and real-time retrieval-augmented generation (RAG) to detect synthetic media vectors.
         </p>
       </div>
 
       <div className="technical-grid">
-        {/* Component 1: Text Forensics */}
+        {/* Pipeline 1: Text */}
         <div className="glass-card tech-card">
           <div className="tech-icon-header">
-            <span className="tech-icon">📝</span>
-            <h3>TEXT FORENSICS PIPELINE</h3>
+            <div className="tech-icon-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" x2="8" y1="13" y2="13"/>
+                <line x1="16" x2="8" y1="17" y2="17"/>
+              </svg>
+            </div>
+            <h3>Text & NLP Verification Pipeline</h3>
           </div>
-          <p>
-            Scans text content using a combination of transformer-based neural nets, pattern heuristics, and real-time retrieval:
+          <p className="tech-summary">
+            Audits text payloads for synthetic formulaic patterns and social engineering tactics.
           </p>
           <ul className="tech-features">
             <li>
-              <strong>RoBERTa OpenAI Detector</strong>: Executes token classification using a fine-tuned RoBERTa model to detect synthetic writing styles and AI-generated outputs.
+              <strong>Perplexity & Lexical Burstiness</strong>: Evaluates sentence length coefficient of variation and token cluster distribution to separate LLM output from organic writing.
             </li>
             <li>
-              <strong>Scam & Phishing Heuristics</strong>: Analyzes syntactic features for high-pressure urgency tactics, prize baits, credential requests, and suspicious shortened links.
+              <strong>Phishing & Social Engineering Heuristics</strong>: Flags high-pressure urgency patterns, fake credential gateways, and suspicious URI redirects.
             </li>
             <li>
-              <strong>Live Wikipedia RAG</strong>: Extracts fact claims from text and issues search queries live to the Wikipedia API, processing snippets to verify consensus context.
+              <strong>Real-Time Wikipedia Consensus RAG</strong>: Extracts verifiable empirical claims and queries encyclopedia APIs live to cross-examine factual consensus.
             </li>
           </ul>
         </div>
 
-        {/* Component 2: Image Forensics */}
+        {/* Pipeline 2: Image */}
         <div className="glass-card tech-card">
           <div className="tech-icon-header">
-            <span className="tech-icon">🖼️</span>
-            <h3>IMAGE FORENSICS PIPELINE</h3>
+            <div className="tech-icon-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                <circle cx="9" cy="9" r="2"/>
+                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+              </svg>
+            </div>
+            <h3>Visual & Image Forensics Pipeline</h3>
           </div>
-          <p>
-            Checks for visual alteration, compression artifacts, and generative AI noise:
+          <p className="tech-summary">
+            Audits pixel-level error residuals, frequency transforms, and camera sensor noise.
           </p>
           <ul className="tech-features">
             <li>
-              <strong>MobileNetV2 Neural Classifier</strong>: Utilizes convolutional feature extraction to detect low object confidence flags, signaling anomalous textures typical of diffusion networks.
+              <strong>Error Level Analysis (ELA)</strong>: Re-compresses JPEG matrices to expose quantization mismatches caused by localized pixel editing or diffusion inpainting.
             </li>
             <li>
-              <strong>EXIF & JFIF Metadata Audits</strong>: Inspects files for stripped headers, format extension mismatches, and Adobe Photoshop software signatures.
+              <strong>DCT Frequency Domain Transforms</strong>: Computes 2D discrete cosine transforms to isolate checkerboard power spectrum spikes from generative upsamplers.
             </li>
             <li>
-              <strong>Chi-Squared byte testing</strong>: Evaluates frequency distributions on pixel segments to recognize uniform byte noise introduced by generative decoders.
+              <strong>PRNU Sensor & EXIF Audit</strong>: Verifies Photo-Response Non-Uniformity silicon noise floors and scans binary headers for generator signatures.
             </li>
           </ul>
         </div>
 
-        {/* Component 3: Audio Forensics */}
+        {/* Pipeline 3: Audio */}
         <div className="glass-card tech-card">
           <div className="tech-icon-header">
-            <span className="tech-icon">🎙️</span>
-            <h3>AUDIO FORENSICS PIPELINE</h3>
+            <div className="tech-icon-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" x2="12" y1="19" y2="22"/>
+              </svg>
+            </div>
+            <h3>Acoustic & Voice Clone Pipeline</h3>
           </div>
-          <p>
-            Identifies synthetic speech cloning and splicing anomalies:
+          <p className="tech-summary">
+            Differentiates human vocal tract chaos from algorithmic neural speech synthesis.
           </p>
           <ul className="tech-features">
             <li>
-              <strong>Transition Smoothness Ratio</strong>: Measures zero-crossing rates. While natural human speech has highly chaotic signal transitions, cloned voices exhibit uniform transitions.
+              <strong>MFCC Spectral Analysis</strong>: Analyzes Mel-Frequency Cepstral Coefficients via Librosa to detect robotic formant transitions and spectral flattening.
             </li>
             <li>
-              <strong>Synthesizer Signature Scan</strong>: Checks binary footings for strings from major voice cloning engines like ElevenLabs, Coqui, bark, and Tortoise-TTS.
+              <strong>Pitch Jitter & Harmonics</strong>: Measures micro-variations in fundamental frequency (F0) that neural voice clones fail to naturally replicate.
             </li>
             <li>
-              <strong>Silence Gap Analysis</strong>: Flags silent periods that match splicing boundaries or audio stitching.
+              <strong>Silence Cadence Inspection</strong>: Flags unnatural mathematically uniform pauses indicative of synthetic audio stitching.
             </li>
           </ul>
         </div>
 
-        {/* Component 4: Video Forensics */}
+        {/* Pipeline 4: Video */}
         <div className="glass-card tech-card">
           <div className="tech-icon-header">
-            <span className="tech-icon">🎭</span>
-            <h3>VIDEO DEEPFAKE PIPELINE</h3>
+            <div className="tech-icon-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="m22 8-6 4 6 4V8Z"/>
+                <rect width="14" height="12" x="2" y="6" rx="2"/>
+              </svg>
+            </div>
+            <h3>Video Deepfake Pipeline</h3>
           </div>
-          <p>
-            Implements frame-by-frame forensics and temporal evaluations:
+          <p className="tech-summary">
+            Performs multi-frame temporal evaluations and container integrity audits.
           </p>
           <ul className="tech-features">
             <li>
-              <strong>Temporal Sampling</strong>: Extracts structural video frames dynamically using OpenCV (`cv2`) to sample sections without incurring high processing delays.
+              <strong>Dynamic Temporal Sampling</strong>: Samples key frames using OpenCV without incurring excessive server processing latency.
             </li>
             <li>
-              <strong>Frame Classification</strong>: Feeds sampled frame arrays into the deep learning pipeline to compute probability values for face swap and lipsync anomalies.
+              <strong>Facial Boundary Jitter Tracking</strong>: Identifies micro-blur along face swap seams and tracks landmark alignment stability during head rotation.
             </li>
             <li>
-              <strong>Metadata Containers</strong>: Identifies duplicate or multiple header blocks (`moov` atoms) indicating re-encoding and tampering.
+              <strong>Container & Atom Auditing</strong>: Detects multi-generation re-encoding anomalies and duplicate metadata header blocks (`moov` atoms).
             </li>
           </ul>
         </div>
       </div>
 
+      {/* Unified Scoring Engine Box */}
       <div className="glass-card trust-engine-card">
         <div className="trust-engine-header">
-          <span className="tech-icon">⚡</span>
-          <h3>UNIFIED TRUST & RISK ENGINE</h3>
+          <div className="tech-icon-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="m9 12 2 2 4-4"/>
+            </svg>
+          </div>
+          <div>
+            <h3>Unified Trust Score & Risk Engine</h3>
+            <p>Mathematical aggregation of individual forensic finding confidence scores</p>
+          </div>
         </div>
-        <p className="spacer">
-          Individual results from the NLP, Vision, and Audio analyzers are aggregated into a single, cohesive Trust Score and threat level categorization.
-        </p>
         
         <div className="bento-inner-grid">
           <div className="inner-col">
-            <h4>Category Weights</h4>
+            <h4>Vector Weights</h4>
             <ul className="engine-weights">
-              <li><span>Deepfake Detection</span> <span className="weight-badge">30%</span></li>
-              <li><span>AI Generation</span> <span className="weight-badge">25%</span></li>
-              <li><span>Manipulation</span> <span className="weight-badge">20%</span></li>
-              <li><span>Scam / Phishing</span> <span className="weight-badge">15%</span></li>
-              <li><span>Claim Verification</span> <span className="weight-badge">10%</span></li>
+              <li><span>Deepfake Detection</span> <strong className="weight-val">30%</strong></li>
+              <li><span>AI Image Generation</span> <strong className="weight-val">25%</strong></li>
+              <li><span>Pixel Manipulation</span> <strong className="weight-val">20%</strong></li>
+              <li><span>Scam / Phishing NLP</span> <strong className="weight-val">15%</strong></li>
+              <li><span>Claim Verification</span> <strong className="weight-val">10%</strong></li>
             </ul>
           </div>
           
           <div className="inner-col">
             <h4>Severity Calibration</h4>
-            <p>
-              Anomalies are calibrated based on their severity multipliers, preventing minor/low-risk detections from incorrectly triggering warnings:
-            </p>
             <div className="severity-bar">
-              <span className="sev-tag low">LOW (0.1x)</span>
-              <span className="sev-tag med">MEDIUM (0.4x)</span>
-              <span className="sev-tag high">HIGH (0.8x)</span>
-              <span className="sev-tag crit">CRITICAL (1.0x)</span>
+              <span className="sev-tag low">LOW (0.05x)</span>
+              <span className="sev-tag med">MEDIUM (0.40x)</span>
+              <span className="sev-tag high">HIGH (0.80x)</span>
+              <span className="sev-tag crit">CRITICAL (1.00x)</span>
             </div>
-            <p className="formula-text">
+            <div className="formula-box">
               <code>Category Risk = max(confidence * severity_multiplier)</code>
-              <br />
               <code>Trust Score = Sum(Category Risk * Weight) * 100</code>
-            </p>
+            </div>
           </div>
         </div>
       </div>

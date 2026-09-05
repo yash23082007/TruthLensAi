@@ -5,18 +5,18 @@ import { analyzeContent } from '../utils/api';
 const SAMPLE_TEXTS = [
   {
     id: 'txt-scam',
-    title: 'Urgent Wire Scam / Phishing Alert',
-    text: 'URGENT: Your bank account has been locked due to suspicious login attempts. Please click the link immediately and confirm your social security number and password to prevent permanent account suspension.'
+    title: 'Urgent Wire Transfer / Phishing Alert',
+    text: 'URGENT SECURITY ALERT: Your bank account has been locked due to suspicious login attempts. Please click the link immediately and confirm your social security number and password to prevent permanent account suspension.'
   },
   {
     id: 'txt-ai',
-    title: 'AI LLM Essay (GPT-4 Typical Formula)',
-    text: 'In conclusion, it is important to remember that technological innovation serves as a transformative catalyst for modern society. By delving into the multifaceted nuances of artificial intelligence, we can foster a holistic paradigm that balances ethical frameworks with unprecedented efficiency.'
+    title: 'Synthetic LLM Formula Essay',
+    text: 'In conclusion, it is crucial to recognize that technological innovation serves as a transformative catalyst for modern society. By delving into the multifaceted nuances of artificial intelligence, we can foster a holistic paradigm that balances ethical frameworks with unprecedented synergy.'
   },
   {
     id: 'txt-human',
     title: 'Authentic Human Message',
-    text: 'Hey guys, sorry for being late today! My car wouldn\'t start and traffic on I-95 was absolute chaos. Let\'s grab coffee around 3pm if you\'re still at the office.'
+    text: 'Hey everyone, sorry for running a bit late today! My car had a dead battery and traffic on the highway was backed up for miles. Let\'s grab lunch around 1pm if you\'re still at the studio.'
   }
 ];
 
@@ -33,26 +33,26 @@ const TokenPredictabilityLens = ({ onBack }) => {
     setSelectedToken(null);
 
     const words = textToScan.split(/(\s+)/);
-    const urgencyWords = ['urgent', 'locked', 'suspicious', 'immediately', 'confirm', 'social', 'security', 'password', 'suspension', 'wire', 'transfer', 'click', 'bank'];
-    const aiFormulaWords = ['delving', 'multifaceted', 'nuances', 'catalyst', 'transformative', 'paradigm', 'holistic', 'unprecedented', 'furthermore', 'testament'];
+    const urgencyWords = ['urgent', 'locked', 'suspicious', 'immediately', 'confirm', 'social', 'security', 'password', 'suspension', 'wire', 'transfer', 'click', 'bank', 'closure', 'restricted'];
+    const aiFormulaWords = ['delving', 'multifaceted', 'nuances', 'catalyst', 'transformative', 'paradigm', 'holistic', 'unprecedented', 'furthermore', 'testament', 'crucial', 'synergy', 'conclusion'];
 
     const parsedTokens = words.map((w, idx) => {
       const clean = w.toLowerCase().replace(/[^a-z]/g, '');
-      let type = 'human'; // 'ai', 'scam', 'moderate', 'human'
-      let reason = 'Organic conversational variance.';
+      let type = 'human';
+      let reason = 'Natural conversational variance with high organic burstiness.';
       let score = 0.15;
 
       if (urgencyWords.includes(clean)) {
         type = 'scam';
-        reason = 'High-urgency social engineering keyword triggering scam flags.';
+        reason = 'High-pressure social engineering keyword characteristic of phishing scams.';
         score = 0.95;
       } else if (aiFormulaWords.includes(clean)) {
         type = 'ai';
-        reason = 'Over-indexed LLM vocabulary token with high predictability (low perplexity).';
+        reason = 'Over-indexed LLM vocabulary token with low perplexity and predictable formulaic transition.';
         score = 0.88;
       } else if (clean.length > 7 && Math.sin(idx) > 0.4) {
         type = 'moderate';
-        reason = 'Predictable sentence transition structure.';
+        reason = 'Predictable sentence transition structure with moderate token probability.';
         score = 0.52;
       }
 
@@ -73,7 +73,7 @@ const TokenPredictabilityLens = ({ onBack }) => {
       setStats({
         trust_score: 82.0,
         risk_level: 'high',
-        summary: '⚠️ High probability of synthetic phishing / AI generation detected.',
+        summary: 'High probability of synthetic phishing / AI generation detected.',
         details: [
           { category: 'Scam Phishing', finding: 'Multiple urgency keywords and credential requests', confidence: 0.92, severity: 'critical' }
         ]
@@ -87,47 +87,56 @@ const TokenPredictabilityLens = ({ onBack }) => {
     <div className="token-lens container animate-fade-in">
       <div className="lens-header">
         <div>
-          <div className="section-stamp">Token Forensics & Perplexity Lens</div>
-          <h1 className="lens-title">INTERACTIVE TEXT & SCAM HIGHLIGHTER</h1>
+          <div className="section-tag">Token Forensics</div>
+          <h1 className="lens-title">Token Perplexity & Phishing Lens</h1>
           <p className="lens-subtitle">
-            Inspect text token-by-token. Color coding exposes low-perplexity LLM filler, social engineering urgency triggers, and authentic human burstiness.
+            Inspect text token-by-token. Color coding exposes low-perplexity LLM filler phrases, social engineering urgency triggers, and authentic human burstiness.
           </p>
         </div>
         {onBack && (
-          <button className="btn btn-secondary" onClick={onBack}>
-            ← BACK TO SCANNER
+          <button className="btn btn-secondary btn-small" onClick={onBack}>
+            ← Back to Overview
           </button>
         )}
       </div>
 
-      {/* Preset Buttons */}
+      {/* Preset Toolbar */}
       <div className="lens-presets">
-        <span className="preset-label">TEST PRESETS:</span>
-        {SAMPLE_TEXTS.map((sample) => (
-          <button
-            key={sample.id}
-            className="preset-tag"
-            onClick={() => {
-              setInputText(sample.text);
-              runTokenAnalysis(sample.text);
-            }}
-          >
-            {sample.title}
-          </button>
-        ))}
+        <span className="preset-label">BENCHMARK PRESETS:</span>
+        <div className="presets-list">
+          {SAMPLE_TEXTS.map((sample) => (
+            <button
+              key={sample.id}
+              className="preset-chip"
+              onClick={() => {
+                setInputText(sample.text);
+                runTokenAnalysis(sample.text);
+              }}
+            >
+              {sample.title}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="lens-layout">
-        {/* Left Column: Text Input & Interactive Token View */}
+        {/* Editor Pane */}
         <div className="lens-editor-pane glass-card">
           <div className="pane-header">
-            <h3>INPUT TEXT & TOKEN MAPPING</h3>
+            <h3>Input Text & Token Map</h3>
             <button
-              className="btn btn-glow btn-sm"
+              className="btn btn-primary btn-small"
               onClick={() => runTokenAnalysis()}
               disabled={isScanning}
             >
-              {isScanning ? 'EVALUATING TOKENS...' : '⚡ SCAN TOKENS'}
+              {isScanning ? (
+                <>
+                  <span className="status-dot active pulse"></span>
+                  Evaluating...
+                </>
+              ) : (
+                'Scan Tokens'
+              )}
             </button>
           </div>
 
@@ -142,10 +151,10 @@ const TokenPredictabilityLens = ({ onBack }) => {
           {tokens.length > 0 && (
             <div className="token-display-box">
               <div className="legend-strip">
-                <span className="legend-item"><b className="dot scam"></b> Urgent / Phishing Trigger</span>
-                <span className="legend-item"><b className="dot ai"></b> High Predictability (AI LLM)</span>
-                <span className="legend-item"><b className="dot moderate"></b> Moderate Transition</span>
-                <span className="legend-item"><b className="dot human"></b> Human Nuance / Organic</span>
+                <span className="legend-item"><span className="legend-dot scam"></span> Urgent Phishing Trigger</span>
+                <span className="legend-item"><span className="legend-dot ai"></span> High Predictability (LLM)</span>
+                <span className="legend-item"><span className="legend-dot moderate"></span> Moderate Transition</span>
+                <span className="legend-item"><span className="legend-dot human"></span> Organic Human Variance</span>
               </div>
 
               <div className="tokens-wrapper">
@@ -163,36 +172,43 @@ const TokenPredictabilityLens = ({ onBack }) => {
           )}
         </div>
 
-        {/* Right Column: Token Inspector & Diagnostics */}
+        {/* Diagnostics Sidebar */}
         <div className="lens-sidebar glass-card">
-          <h3>TOKEN DIAGNOSTICS</h3>
+          <h3 className="sidebar-title">Token Diagnostics</h3>
 
           {selectedToken ? (
             <div className="token-detail-card animate-slide-up">
               <div className="token-card-head">
-                <span className={`token-badge ${selectedToken.type}`}>
+                <span className={`signal-severity-tag sev-${selectedToken.type === 'scam' ? 'critical' : selectedToken.type === 'ai' ? 'high' : 'low'}`}>
                   {selectedToken.type.toUpperCase()}
                 </span>
                 <strong className="token-word">"{selectedToken.word.trim()}"</strong>
               </div>
               <div className="token-metric">
-                <span>Predictability Score:</span>
-                <strong>{Math.round(selectedToken.score * 100)}%</strong>
+                <span className="metric-lbl">Predictability Index:</span>
+                <strong className="metric-val">{Math.round(selectedToken.score * 100)}%</strong>
               </div>
               <p className="token-reason">{selectedToken.reason}</p>
             </div>
           ) : (
             <div className="token-placeholder">
-              <p>👉 Click on any highlighted word in the text to inspect its token weight and context rationale.</p>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/>
+                <path d="M9 18h6"/>
+                <path d="M10 22h4"/>
+              </svg>
+              <p>Click any highlighted word in the text to inspect its predictability score and anomaly context.</p>
             </div>
           )}
 
           {stats && (
             <div className="lens-stats-box">
-              <h4>SYNTHETIC TEXT VERDICT</h4>
+              <span className="stats-heading">EVALUATION VERDICT</span>
               <div className="stats-score-line">
-                <span>Anomaly Risk:</span>
-                <strong className={`risk-${stats.risk_level}`}>{stats.risk_level.toUpperCase()}</strong>
+                <span>Threat Level:</span>
+                <strong className={`risk-text-${stats.risk_level?.toLowerCase()}`}>
+                  {stats.risk_level?.toUpperCase()}
+                </strong>
               </div>
               <p className="stats-summary">{stats.summary}</p>
             </div>
