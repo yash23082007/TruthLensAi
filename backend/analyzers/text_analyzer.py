@@ -4,8 +4,21 @@ import math
 from collections import Counter
 from typing import List, Tuple
 from models.schemas import AnalysisDetail, RiskLevel
-from core.groq_client import groq_client
 from core.config import settings
+import torch
+try:
+    from transformers import pipeline
+    # Load model on startup if possible
+    # We use a zero-shot classification model for scam/phishing detection as an example
+    _classifier = pipeline(
+        "zero-shot-classification", 
+        model="facebook/bart-large-mnli", 
+        device=0 if torch.cuda.is_available() else -1
+    )
+    _has_transformers = True
+except ImportError:
+    _has_transformers = False
+    _classifier = None
 
 
 class TextAnalyzer:
@@ -166,9 +179,42 @@ class TextAnalyzer:
 
     # ─── Scam/Phishing Pattern Detection ─────────────────────────────────
     def _scam_pattern_detection(self, text: str, details: List[AnalysisDetail]):
-        """Rule-based scam/phishing detection."""
+        """ML-based scam/phishing detection using HuggingFace."""
         text_lower = text.lower()
+        
+        if _has_transformers and _classifier:
+            try:
+                candidate_labels = ["scam", "phishing", "urgent request", "legitimate message", "financial request"]
+                result = _classifier(text[:1000], candidate_labels) # limit to 1000 chars to avoid memory issues
+                
+                scam_score = 0
+                scores = dict(zip(result['labels'], result['scores']))
+                
+                if scores.get('scam', 0) > 0.4 or scores.get('phishing', 0) > 0.4:
+                    scam_score = max(scores.get('scam', 0), scores.get('phishing', 0))
+                    severity = RiskLevel.CRITICAL if scam_score > 0.7 else RiskLevel.HIGH
+                    details.append(AnalysisDetail(
+                        category="Scam Phishing",
+                        finding=f"Deep Learning model detected high likelihood of scam/phishing patterns (confidence: {scam_score:.2f})",
+                        confidence=scam_score,
+                        severity=severity
+                    ))
+                elif scores.get('urgent request', 0) > 0.6:
+                    details.append(AnalysisDetail(
+                        category="Manipulation",
+                        finding=f"Deep Learning model detected high urgency language often used in social engineering (confidence: {scores['urgent request']:.2f})",
+                        confidence=scores['urgent request'],
+                        severity=RiskLevel.MEDIUM
+                    ))
+            except Exception as e:
+                print(f"Transformers pipeline failed: {e}")
+                self._fallback_scam_detection(text, details)
+        else:
+            self._fallback_scam_detection(text, details)
 
+    def _fallback_scam_detection(self, text: str, details: List[AnalysisDetail]):
+        """Rule-based scam/phishing detection as fallback."""
+        text_lower = text.lower()
         # Urgency indicators
         urgency_phrases = [
             'act now', 'limited time', 'don\'t miss', 'expires soon',
@@ -192,28 +238,21 @@ class TextAnalyzer:
         url_pattern = r'https?://[^\s<>"{}|\\^`\[\]]+|bit\.ly|tinyurl|t\.co'
         suspicious_urls = re.findall(url_pattern, text_lower)
 
-        scam_score = 0
         if urgency_count >= 2:
-            scam_score += 0.3
             details.append(AnalysisDetail(
                 category="Scam Phishing",
                 finding=f"Multiple urgency-inducing phrases detected ({urgency_count}) — classic social engineering tactic",
                 confidence=min(0.8, 0.4 + urgency_count * 0.15),
                 severity=RiskLevel.HIGH
             ))
-        elif urgency_count == 1:
-            scam_score += 0.1
 
         if money_count >= 2:
-            scam_score += 0.4
             details.append(AnalysisDetail(
                 category="Scam Phishing",
                 finding=f"Multiple financial/credential request indicators ({money_count}) — likely phishing attempt",
                 confidence=min(0.9, 0.5 + money_count * 0.15),
                 severity=RiskLevel.CRITICAL
             ))
-        elif money_count == 1:
-            scam_score += 0.15
 
         if len(suspicious_urls) > 0 and (urgency_count > 0 or money_count > 0):
             details.append(AnalysisDetail(
