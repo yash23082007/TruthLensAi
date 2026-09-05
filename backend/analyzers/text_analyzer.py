@@ -4,6 +4,7 @@ import math
 from collections import Counter
 from typing import List, Tuple
 from models.schemas import AnalysisDetail, RiskLevel
+from core.groq_client import groq_client
 from core.config import settings
 import torch
 try:

@@ -23,10 +23,10 @@ def get_vision_pipeline():
         from transformers import pipeline
         import torch
         device = 0 if torch.cuda.is_available() else -1
-        # Try local cache first to prevent any network blocking
+        # Try to load from HuggingFace
         try:
-            _vision_pipeline = pipeline("image-classification", model="umm-maybe/AI-image-detector", device=device, local_files_only=True)
-            print("Loaded local cached Deepfake Vision model.")
+            _vision_pipeline = pipeline("image-classification", model="umm-maybe/AI-image-detector", device=device)
+            print("Loaded Deepfake Vision model.")
         except Exception:
             _vision_pipeline = None
             print("Vision model not locally cached. Using advanced forensic heuristics ensemble.")

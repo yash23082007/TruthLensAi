@@ -22,6 +22,25 @@ try:
 except ImportError:
     HAS_SOUNDFILE = False
 
+_audio_pipeline = None
+_audio_pipeline_attempted = False
+
+def get_audio_pipeline():
+    global _audio_pipeline, _audio_pipeline_attempted
+    if _audio_pipeline_attempted:
+        return _audio_pipeline
+    _audio_pipeline_attempted = True
+    try:
+        from transformers import pipeline
+        import torch
+        device = 0 if torch.cuda.is_available() else -1
+        _audio_pipeline = pipeline("audio-classification", model="MelodyMachine/Deepfake-Audio-Detection-V2", device=device)
+        print("Loaded Deepfake Audio Vision model.")
+    except Exception as e:
+        _audio_pipeline = None
+        print(f"Transformers audio model not loaded ({e}). Using advanced heuristic ensemble.")
+    return _audio_pipeline
+
 
 class AudioAnalyzer:
     """
@@ -51,6 +70,42 @@ class AudioAnalyzer:
             audio_data, sample_rate = self._load_audio(audio_bytes, fmt)
 
         if audio_data is not None and sample_rate is not None:
+            # 0. HuggingFace Deep Learning Analysis (primary signal)
+            ml_confidence = 0.0
+            active_pipeline = get_audio_pipeline()
+            if active_pipeline:
+                try:
+                    # Pipeline expects raw float array
+                    results = active_pipeline(audio_data)
+                    fake_score = 0.0
+                    for res in results:
+                        if 'fake' in res['label'].lower() or 'spoof' in res['label'].lower():
+                            fake_score = max(fake_score, res['score'])
+                    
+                    if fake_score > 0.8:
+                        details.append(AnalysisDetail(
+                            category="AI Generation",
+                            finding=f"Deep Learning model strongly classifies this audio as AI-generated/Deepfake (score: {fake_score:.1%})",
+                            confidence=round(fake_score, 2),
+                            severity=RiskLevel.CRITICAL
+                        ))
+                    elif fake_score > 0.5:
+                        details.append(AnalysisDetail(
+                            category="AI Generation",
+                            finding=f"Deep Learning model suspects this audio may be AI-generated (score: {fake_score:.1%})",
+                            confidence=round(fake_score, 2),
+                            severity=RiskLevel.HIGH
+                        ))
+                    elif fake_score > 0.3:
+                        details.append(AnalysisDetail(
+                            category="AI Generation",
+                            finding=f"Deep Learning model shows low AI-generation probability (score: {fake_score:.1%})",
+                            confidence=round(fake_score, 2),
+                            severity=RiskLevel.MEDIUM
+                        ))
+                except Exception as e:
+                    print(f"Audio DL inference error: {e}")
+
             # 1. MFCC-based spectral analysis
             self._mfcc_analysis(audio_data, sample_rate, details)
 
