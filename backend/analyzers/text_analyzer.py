@@ -17,7 +17,8 @@ try:
         device=0 if torch.cuda.is_available() else -1
     )
     _has_transformers = True
-except ImportError:
+except Exception as e:
+    print(f"Transformers pipeline failed to load: {e}")
     _has_transformers = False
     _classifier = None
 

@@ -17,7 +17,7 @@ export default function HomePage() {
         layout="image-left"
         title="Detect suspicious digital content before you trust it."
         text="Digital manipulation is becoming easier to create and harder to spot. TruthLens AI uses multiple advanced analysis layers to give you a clear, evidence-based assessment of the content you verify."
-        imageSrc="https://images.unsplash.com/photo-1592890288564-76628a30a657?auto=format&fit=crop&q=80&w=1200"
+        imageSrc='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800"><rect width="1200" height="800" fill="%23f1f5f9"/><circle cx="600" cy="400" r="300" fill="none" stroke="%23cbd5e1" stroke-width="40"/><path d="M400,500 L800,300" stroke="%2394a3b8" stroke-width="20"/></svg>'
         imageCaption="Checking media authenticity."
       />
       
@@ -25,7 +25,7 @@ export default function HomePage() {
         layout="text-left"
         title="Understand what makes a result suspicious."
         text="A simple 'fake' or 'real' label isn't enough. Our platform extracts technical metadata, detects generation tool signatures, and highlights the exact signals that contributed to the final trust score."
-        imageSrc="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1200"
+        imageSrc='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800"><rect width="1200" height="800" fill="%230f172a"/><circle cx="600" cy="400" r="300" fill="none" stroke="%231e293b" stroke-width="40"/><path d="M400,500 L800,300" stroke="%233b82f6" stroke-width="20"/></svg>'
         imageCaption="Data extraction and analysis."
       />
       

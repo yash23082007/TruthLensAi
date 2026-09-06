@@ -37,7 +37,7 @@ export default function Hero() {
         <div className="visual-split">
           <div className="visual-half suspicious">
             <span className="visual-label">Suspicious</span>
-            <img src="https://images.unsplash.com/photo-1544256718-3bcf237f3974?auto=format&fit=crop&q=80&w=800" alt="Suspicious Example" />
+            <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800"><rect width="800" height="800" fill="%230f172a"/><circle cx="400" cy="400" r="250" fill="%231e293b"/><path d="M200,600 Q400,200 600,600" fill="none" stroke="%233b82f6" stroke-width="20"/></svg>' alt="Suspicious Example" />
             <div className="focus-indicator">
               <div className="focus-ring"></div>
               <div className="focus-dot"></div>
@@ -45,7 +45,7 @@ export default function Hero() {
           </div>
           <div className="visual-half authentic">
             <span className="visual-label authentic-label">Authentic</span>
-            <img src="https://images.unsplash.com/photo-1544256718-3bcf237f3974?auto=format&fit=crop&q=80&w=800&grayscale" alt="Authentic Example" />
+            <img src='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800"><rect width="800" height="800" fill="%23f8fafc"/><circle cx="400" cy="400" r="250" fill="%23f1f5f9"/><path d="M200,600 Q400,200 600,600" fill="none" stroke="%2394a3b8" stroke-width="20"/></svg>' alt="Authentic Example" />
           </div>
         </div>
       </div>
