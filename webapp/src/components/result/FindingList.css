@@ -1,0 +1,68 @@
+/* Findings CSS */
+.finding-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.finding-item {
+  display: flex;
+  gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.finding-item:last-child {
+  border-bottom: none;
+}
+
+.finding-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.finding-icon.low { color: var(--color-success); }
+.finding-icon.medium { color: var(--color-warning); }
+.finding-icon.high, .finding-icon.critical { color: var(--color-danger); }
+
+.finding-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.finding-header strong {
+  font-size: 15px;
+}
+
+.finding-severity {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 700;
+}
+
+.sev-low { background: var(--color-success-bg); color: var(--color-success); }
+.sev-medium { background: var(--color-warning-bg); color: var(--color-warning); }
+.sev-high, .sev-critical { background: var(--color-danger-bg); color: var(--color-danger); }
+
+.finding-confidence {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.finding-content p {
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+.no-findings p {
+  font-size: 14px;
+  padding: 20px;
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  border-radius: var(--radius-sm);
+}

@@ -1,0 +1,102 @@
+.verifier-page {
+  padding-bottom: 140px;
+}
+
+.verifier-header {
+  text-align: center;
+  padding: 80px 0 40px;
+}
+
+.verifier-header h1 {
+  font-size: clamp(40px, 5vw, 64px);
+  margin-bottom: 16px;
+}
+
+.verifier-header p {
+  font-size: 18px;
+  max-width: 600px;
+  margin: 0 auto 32px;
+}
+
+.verifier-workspace {
+  max-width: 1100px;
+}
+
+.verifier-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.verifier-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+}
+
+.info-panel h3 {
+  font-size: 18px;
+  margin-bottom: 24px;
+}
+
+.check-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.check-list li {
+  display: flex;
+  gap: 16px;
+}
+
+.check-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  margin-top: 6px;
+  box-shadow: 0 0 0 4px #e0e7f1;
+}
+
+.check-list strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 4px;
+  color: var(--color-text);
+}
+
+.check-list span {
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+.result-section {
+  margin-top: 40px;
+  animation: resultEnter 0.6s ease;
+}
+
+@keyframes resultEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .verifier-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .verifier-panel {
+    padding: 24px;
+  }
+}
